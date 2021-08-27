@@ -1,0 +1,2 @@
+curl -vv --cacert /home/rga/clientinvocation/richChain.pem -X GET https://russapp1.us-south.containers.appdomain.cloud \
+-H 'cache-control: no-cache'
