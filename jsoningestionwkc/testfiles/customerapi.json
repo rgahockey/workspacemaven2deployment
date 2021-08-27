@@ -1,0 +1,3487 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "## Description\nA [RESTful API](https://en.wikipedia.org/wiki/Representational_state_transfer) for interacting with customer data.\n## Overview\n\nConsumers should generally be aware of the following:\n1. The available resources and attributes reflect the business terms and data elements found in the [CIM](https://s.f/CIMcontent) & [CMM](https://s.f/CMMcontent)\n    * The [CIM](https://s.f/CIMcontent) & [CMM](https://s.f/CMMcontent) refer to the `customerId` simply as an `identifier`\n    * Only the resources listed below contain the `identifier` attribute\n        * `/customers`\n        * `/individualCustomers`\n        * `/organizationCustomers`\n2. All requests sent to the Customer API must adhere to the [JSON API specification](http://jsonapi.org/format)\n    * Refer to the [specification](http://jsonapi.org/format/) for details about the following:\n        * How a client should request that resources be created, fetched, or modified\n        * How the server will respond to those requests\n3. The `type` and `id` members of every resource are [a convention of the JSON API specification](http://jsonapi.org/format/#document-resource-objects)\n    * Every `type` and `id` pair can be used to [uniquely identify a single resource](http://jsonapi.org/format/#document-resource-object-identification)\n    * <span style=\"color: firebrick;\">Consumers should **never** permanently store an `id` as it may expire or otherwise become invalid</span>\n    * The `id` should also not be confused with other keys commonly used to identify a customer\n        * `id != crmId`\n        * `id != clientId`\n        * `id != customerId`\n        * `id != identifier`\n4. When data cannot be returned for an attribute its value will always be `null` or an empty array `[]`\n    * Relationships and [resource linkage](http://jsonapi.org/format/#document-resource-object-linkage) follow this same convention\n5. Fetching multiple resources in a single request is achieved by [including related resources](http://jsonapi.org/format/#fetching-includes)\n    * Consumers can control this behavior by using the `include` parameter\n    * For example: `GET` `/customers?include=telephones`\n6. A consumer may request that only specific attributes appear in the response by using the `fields` parameter\n    * This is the [sparse fieldsets](http://jsonapi.org/format/#fetching-sparse-fieldsets) capability\n    * For example: `GET` `/individualCustomerNames?fields[individualCustomerNames]=firstName,lastName`\n7. Filters may be used to control which resources appear in the response\n    * To apply a filter, provide one or more `filter` parameters\n    * For example: `GET` `/customerPostalAddresses?filter[usage]=Mailing`\n\n## Client Libraries\nThere are many open source libraries available that can provide value when it comes to integrating with the Customer API. To learn more about what is available please follow the link below.\n\n* [Projects implementing the JSON API specification](https://jsonapi.org/implementations/)\n\nFor Java clients, we provide the [customer-api-model](https://s.f/customer-api-model) library which contains the model classes (POJOs) for every resource. There's also the [customer-api-client](https://s.f/customer-api-client) library which utilizes [jsonapi-converter](https://github.com/jasminb/jsonapi-converter). These libraries are for your convenience (i.e. not required). If you have questions about these or any other client library please [contact us](mailto:dl-et-amcc-scrumntonic.dld9qg@internal.statefarm.com).\n\n## Security\nAll users must be authenticated to interact with the Customer API. Some resource URLs have additional security requirements. Please refer to the tables below to determine which roles may apply.\n\n| User Affiliation | Authentication | Required Role / [LoA](https://s.f/cimloa) to RETRIEVE data | Required Role / [LoA](https://s.f/cimloa) to WRITE data | Notes |\n| --- | --- | --- | --- | --- |\n| CUSTOMER | SSO Token | [LoA3](https://s.f/cimloa) or higher | [LoA4](https://s.f/cimloa) | can only interact with their own data (partial drivers license / SSN) |\n| ASSOCIATE | SSO Token | CROM_CustAPI_Retrieve_G | CROM_CustAPI_Write_G | the CROM_CustAPI_Retrieve_G role is not required in most development environments |\n| PROCESS_ID | Basic Auth | CROM_CustAPI_Retrieve_G | CROM_CustAPI_Write_G | |\n\n<br>\n\n| Optional Roles | Resource URLs | Description |\n| --- | --- | --- |\n| CROM_CustAPI_PHI_G | /customers<br>/individualCustomers<br>/organizationCustomers<br>/customerToCustomerRelationships<br>/customers/{id}/customerRelationships<br>/individualCustomers/{id}/customerRelationships<br>/organizationCustomers/{id}/customerRelationships | permits members to retrieve [Protected Health Information (PHI)](https://s.f/hippa) (data about customers that have only had health products) |\n| CROM_CustAPI_DNSh_Override_G | /customerEmployments<br>/individualCustomers<br>/individualCustomers/{id}/employment | permits members to override the customer's [Do Not Share (DNSh)](https://s.f/dnsh)  preference |\n| CROM_CustAPI_DL_Full_G | /customerDriversLicenses<br>/individualCustomers/{id}/driversLicense | permits members to retrieve drivers license information |\n| CROM_CustAPI_DL_Partial_G | /customerDriversLicenses<br>/individualCustomers/{id}/driversLicense | permits members to retrieve partial drivers license information |\n| CROM_CustAPI_TI_Full_G | /customerTaxIdentifications<br>/customers/{id}/taxIdentification<br>/individualCustomers/{id}/taxIdentification<br>/organizationCustomers/{id}/taxIdentification | permits members to retrieve tax identification information |\n| CROM_CustAPI_TI_Partial_G | /customerTaxIdentifications<br>/customers/{id}/taxIdentification<br>/individualCustomers/{id}/taxIdentification<br>/organizationCustomers/{id}/taxIdentification | permits members to retrieve partial tax identification information |\n\n## Access Approval\nOfficial consumption of the Customer API will require an active service contract in [Business Space](https://s.f/businessspace). Please see the [Customer Core Services Tech Guide Page](http://s.f/customercore) for further details.\n\n1. **Business Service:** CustomerAPI\n2. **Service Version:** CustomerAPI (1.0.0)\n\n## Versioning Strategy    \nConsumers are required to accept all backwards compatible changes to the Customer API. Thus, it is very important to understand that <span style=\"color: firebrick;\">a new version will **not** be created for every interface change.</span> When a change must be made that would break backwards compatibility, only then would a new version be introduced. Instructions and timelines for migration will be provided to all consumers as new versions are created. Consumers will control routing when multiple active versions are available. This is achieved by providing a version identifier in the URL path.\n\n**Examples:**\n* `/customerapi/v2/customers`\n* `/customerapi/v3/customers`\n\nThe URL paths above each contain a version identifier, `v2` and `v3` respectively. As a consumer you control the routing of each request by providing a version identifier in the URL path. When switching versions there is no need to establish new contracts in [Business Space](https://s.f/businessspace). If you are an existing consumer and are aware of the breaking interface changes you may upgrade to a new version at any time.\n\n## Backwards Compatibility\nA change is considered backwards compatible if a client program written against one version of the API will continue to work in the same way, without modification<span style=\"color: firebrick;\">\\*\\*</span>, against the new version of the API. However, any client program failures caused by a change to the Customer API as described below will be the responsibility of the consumer<span style=\"color: firebrick;\">\\*\\*</span>.\n\n1. Changes to JSON structures:\n    * Existing attributes will not be removed and will always have the same name and type\n    * <span style=\"color: firebrick;\">New attributes may be added to a resource at any time</span>\n    * <span style=\"color: firebrick;\">The order in which attributes appear may change at any time</span>\n2. Changes to Resource URLs:\n    * Existing resource URLs will continue to function and have the same meaning\n    * <span style=\"color: firebrick;\">New resource URLs may be added at any time</span>\n3. Changes to HTTP Methods: `GET` `POST` `PATCH` `DELETE`\n    * The allowed methods for an existing resource will continue to perform the appropriate action\n    * <span style=\"color: firebrick;\">New methods may be allowed for an existing resource at any time</span>\n\n**<span style=\"color: firebrick;\">\\*\\*As a consumer, your sole responsibility is to ensure that all clients which must parse JSON received from the Customer API are forgiving (i.e. [ignoring any unknown attributes](https://s.f/JacksonHowToIgnoreUnknown)).</span>**\n\n## Endpoints\nTo access the Customer API use one of the following endpoints:\n\n| Endpoint URL | Space | Environment\n| --- | :---: | :---: |\n| ht<span>tps://</span>capi-env1.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env1 | test5 |\n| ht<span>tps://</span>capi-env2.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env2 | test3 |\n| ht<span>tps://</span>capi-env3.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env3 | test1 |\n| ht<span>tps://</span>capi-env4.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env4 | syst-f |\n| ht<span>tps://</span>capi-env5.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env5 | dvnt-d |\n| ht<span>tps://</span>capi-env6.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env6 | syst-d |\n| ht<span>tps://</span>capi-env7.cfapps-71a.opr.test.statefarm.org/customerapi-rs/v2 | env7 | syst-e |\n| ht<span>tps://</span>capi-perf.cfapps-71c.opr.test.statefarm.org/customerapi-rs/v2 | perf | performance |\n| ht<span>tps://</span>capi-prep.cfapps-71c.opr.test.statefarm.org/customerapi-rs/v2 | prep | pre-production |\n| ht<span>tps://</span>capi.opr.statefarm.org/customerapi-rs/v2 | prod | production |\n\n## Contact\nWe want your feedback! Please help us improve the Customer API. You can [report an issue](https://s.f/sntissues) or [send an e-mail](mailto:dl-et-amcc-scrumntonic.dld9qg@internal.statefarm.com) to team Scrum 'N Tonic.\n\n## Try it out\nExpand the operations below and click the <button class=\"btn try-out__btn\">Try it out </button> button to send actual requests to the Customer API. For specific request scenarios not covered here, please refer to the [JSON API specification](http://jsonapi.org/format/) or contact us.",
+        "version": "2.0",
+        "title": "Customer API Russ",
+        "contact": {}
+    },
+    "basePath": "/customerapi-rs/v2",
+    "tags": [
+        {
+            "name": "customer-api",
+            "description": "Customer Info Retreaval API"
+        }
+    ],
+    "schemes": [
+        "https"
+    ],
+    "paths": {
+        "/organizationCustomers": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "retrieve all organizationCustomers",
+                "operationId": "OrganizationCustomerRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[identifier]",
+                        "in": "query",
+                        "description": "filter by identifier (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[organizationCustomers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "emailAddress",
+                                "identifier",
+                                "industry",
+                                "languages",
+                                "newIdentifier",
+                                "organizationEarnings",
+                                "organizationNames",
+                                "organizationType",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "emailAddress",
+                                "organizationNames",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyOrganizationCustomers"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "451": {
+                        "description": "Unavailable For Legal Reasons."
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "retrieve an organizationCustomer with the given id",
+                "operationId": "OrganizationCustomerRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[organizationCustomers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "emailAddress",
+                                "identifier",
+                                "industry",
+                                "languages",
+                                "newIdentifier",
+                                "organizationEarnings",
+                                "organizationNames",
+                                "organizationType",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "emailAddress",
+                                "organizationNames",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneOrganizationCustomer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "451": {
+                        "description": "Unavailable For Legal Reasons."
+                    }
+                }
+            }
+        },
+        "/customerPostalAddresses": {
+            "get": {
+                "tags": [
+                    "customerPostalAddresses"
+                ],
+                "summary": "retrieve all customerPostalAddresses",
+                "operationId": "PostalAddressRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerPostalAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "addressIdentifier",
+                                "addressLines",
+                                "addressType",
+                                "city",
+                                "country",
+                                "postalCode",
+                                "primaryIndicator",
+                                "specialHandling",
+                                "specialHandlingType",
+                                "standardization",
+                                "stateProvince",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyPostalAddresses"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerPostalAddresses/{id}": {
+            "get": {
+                "tags": [
+                    "customerPostalAddresses"
+                ],
+                "summary": "retrieve a customerPostalAddress with the given id",
+                "operationId": "PostalAddressRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerPostalAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "addressIdentifier",
+                                "addressLines",
+                                "addressType",
+                                "city",
+                                "country",
+                                "postalCode",
+                                "primaryIndicator",
+                                "specialHandling",
+                                "specialHandlingType",
+                                "standardization",
+                                "stateProvince",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OnePostalAddress"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "retrieve all customers",
+                "operationId": "CustomerRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[identifier]",
+                        "in": "query",
+                        "description": "filter by identifier (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "emailAddress",
+                                "identifier",
+                                "individualCustomer",
+                                "languages",
+                                "newIdentifier",
+                                "organizationCustomer",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "emailAddress",
+                                "individualCustomer",
+                                "individualCustomer.agentRelationships",
+                                "individualCustomer.communicationPreferences",
+                                "individualCustomer.customerRelationships",
+                                "individualCustomer.driversLicense",
+                                "individualCustomer.emailAddress",
+                                "individualCustomer.employment",
+                                "individualCustomer.individualNames",
+                                "individualCustomer.postalAddresses",
+                                "individualCustomer.taxIdentification",
+                                "individualCustomer.telephones",
+                                "organizationCustomer",
+                                "organizationCustomer.agentRelationships",
+                                "organizationCustomer.communicationPreferences",
+                                "organizationCustomer.customerRelationships",
+                                "organizationCustomer.emailAddress",
+                                "organizationCustomer.organizationNames",
+                                "organizationCustomer.postalAddresses",
+                                "organizationCustomer.taxIdentification",
+                                "organizationCustomer.telephones",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "companyName",
+                        "in": "query",
+                        "description": "for customers who have elected to limit sharing of information between companies, providing this parameter will retrieve <a href=\"https://s.f/dnshf\">select attributes</a> from a secondary data source (a point in time affiliate specific snapshot) if one exists. If you're <b>not sure what this is, you probably don't need it.</b>",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCustomers"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "451": {
+                        "description": "Unavailable For Legal Reasons."
+                    }
+                }
+            }
+        },
+        "/customers/{id}": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "retrieve a customer with the given id",
+                "operationId": "CustomerRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "emailAddress",
+                                "identifier",
+                                "individualCustomer",
+                                "languages",
+                                "newIdentifier",
+                                "organizationCustomer",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "emailAddress",
+                                "individualCustomer",
+                                "individualCustomer.agentRelationships",
+                                "individualCustomer.communicationPreferences",
+                                "individualCustomer.customerRelationships",
+                                "individualCustomer.driversLicense",
+                                "individualCustomer.emailAddress",
+                                "individualCustomer.employment",
+                                "individualCustomer.individualNames",
+                                "individualCustomer.postalAddresses",
+                                "individualCustomer.taxIdentification",
+                                "individualCustomer.telephones",
+                                "organizationCustomer",
+                                "organizationCustomer.agentRelationships",
+                                "organizationCustomer.communicationPreferences",
+                                "organizationCustomer.customerRelationships",
+                                "organizationCustomer.emailAddress",
+                                "organizationCustomer.organizationNames",
+                                "organizationCustomer.postalAddresses",
+                                "organizationCustomer.taxIdentification",
+                                "organizationCustomer.telephones",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "companyName",
+                        "in": "query",
+                        "description": "for customers who have elected to limit sharing of information between companies, providing this parameter will retrieve <a href=\"https://s.f/dnshf\">select attributes</a> from a secondary data source (a point in time affiliate specific snapshot) if one exists. If you're <b>not sure what this is, you probably don't need it.</b>",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneCustomer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "451": {
+                        "description": "Unavailable For Legal Reasons."
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/customerRelationships": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve all related customerToCustomerRelationships",
+                "operationId": "IndividualToCustomerRelationshipRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToCustomerRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "customerIdentifier",
+                                "relationshipType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCustomerRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/taxIdentification": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve the related customerTaxIdentification",
+                "operationId": "IndividualToTaxIdentificationRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTaxIdentifications]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "taxIdentificationType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneTaxIdentification"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/communicationPreferences": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve all related customerCommunicationPreferences",
+                "operationId": "OrganizationToCommunicationPreferenceRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerCommunicationPreferences]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "category",
+                                "deliveryMethod",
+                                "preferenceType",
+                                "termsAndConditions"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCommunicationPreferences"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/agentRelationships": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve all related customerToAgentRelationships",
+                "operationId": "IndividualToAgentRelationshipRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToAgentRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "associateIdentifier",
+                                "relationshipType",
+                                "startDate"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyAgentRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomerNames": {
+            "get": {
+                "tags": [
+                    "organizationCustomerNames"
+                ],
+                "summary": "retrieve all organizationCustomerNames",
+                "operationId": "OrganizationNameRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[organizationCustomerNames]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "name",
+                                "nameIdentifier",
+                                "primaryIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyOrganizationNames"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomerNames/{id}": {
+            "get": {
+                "tags": [
+                    "organizationCustomerNames"
+                ],
+                "summary": "retrieve a organizationCustomerName with the given id",
+                "operationId": "OrganizationNameRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[organizationCustomerNames]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "name",
+                                "nameIdentifier",
+                                "primaryIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneOrganizationName"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/emailAddress": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve the related customerEmailAddress",
+                "operationId": "IndividualToEmailAddressRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmailAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "emailAddress",
+                                "invalidEmailAddressReason",
+                                "noEmailDoNotAskIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneEmailAddress"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/communicationPreferences": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve all related customerCommunicationPreferences",
+                "operationId": "CustomerToCommunicationPreferenceRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerCommunicationPreferences]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "category",
+                                "deliveryMethod",
+                                "preferenceType",
+                                "termsAndConditions"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCommunicationPreferences"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/taxIdentification": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve the related customerTaxIdentification",
+                "operationId": "CustomerToTaxIdentificationRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTaxIdentifications]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "taxIdentificationType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneTaxIdentification"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerToAgentRelationships": {
+            "get": {
+                "tags": [
+                    "customerToAgentRelationships"
+                ],
+                "summary": "retrieve all customerToAgentRelationships",
+                "operationId": "AgentRelationshipRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToAgentRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "associateIdentifier",
+                                "relationshipType",
+                                "startDate"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyAgentRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerToAgentRelationships/{id}": {
+            "get": {
+                "tags": [
+                    "customerToAgentRelationships"
+                ],
+                "summary": "retrieve a customerToAgentRelationship with the given id",
+                "operationId": "AgentRelationshipRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToAgentRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "associateIdentifier",
+                                "relationshipType",
+                                "startDate"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneAgentRelationship"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/employment": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve the related customerEmployment",
+                "operationId": "IndividualToEmploymentRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmployments]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "businessOwnerIndicator",
+                                "employerName",
+                                "jobTitle",
+                                "jobTitleStartDate",
+                                "occupation",
+                                "status"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneEmployment"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/taxIdentification": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve the related customerTaxIdentification",
+                "operationId": "OrganizationToTaxIdentificationRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTaxIdentifications]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "taxIdentificationType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneTaxIdentification"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/driversLicense": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve the related customerDriversLicense",
+                "operationId": "IndividualToDriversLicenseRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerDriversLicenses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "stateProvince"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneDriversLicense"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/emailAddress": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve the related customerEmailAddress",
+                "operationId": "CustomerToEmailAddressRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmailAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "emailAddress",
+                                "invalidEmailAddressReason",
+                                "noEmailDoNotAskIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneEmailAddress"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/telephones": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve all related customerTelephones",
+                "operationId": "IndividualToTelephoneRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTelephones]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "extension",
+                                "number",
+                                "undeliverableTextIndicator",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyTelephones"
+                        }
+                    }
+                }
+            }
+        },
+        "/resources": {
+            "get": {
+                "tags": [
+                    "resources"
+                ],
+                "summary": "retrieve all resources",
+                "operationId": "ApiResources.resourcesUsingGET",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/ManyResources"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/customerRelationships": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve all related customerToCustomerRelationships",
+                "operationId": "CustomerToCustomerRelationshipRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToCustomerRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "customerIdentifier",
+                                "relationshipType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCustomerRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerTaxIdentifications": {
+            "get": {
+                "tags": [
+                    "customerTaxIdentifications"
+                ],
+                "summary": "retrieve all customerTaxIdentifications",
+                "operationId": "TaxIdentificationRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTaxIdentifications]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "taxIdentificationType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyTaxIdentifications"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerTaxIdentifications/{id}": {
+            "get": {
+                "tags": [
+                    "customerTaxIdentifications"
+                ],
+                "summary": "retrieve a customerTaxIdentification with the given id",
+                "operationId": "TaxIdentificationRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTaxIdentifications]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "taxIdentificationType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneTaxIdentification"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/individualNames": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve all related individualCustomerNames",
+                "operationId": "IndividualToIndividualNameRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[individualCustomerNames]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "firstName",
+                                "lastName",
+                                "middleName",
+                                "nameIdentifier",
+                                "prefix",
+                                "primaryIndicator",
+                                "professionalDesignation",
+                                "suffix"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyIndividualNames"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerToCustomerRelationships": {
+            "get": {
+                "tags": [
+                    "customerToCustomerRelationships"
+                ],
+                "summary": "retrieve all customerToCustomerRelationships",
+                "operationId": "CustomerRelationshipRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToCustomerRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "customerIdentifier",
+                                "relationshipType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCustomerRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerToCustomerRelationships/{id}": {
+            "get": {
+                "tags": [
+                    "customerToCustomerRelationships"
+                ],
+                "summary": "retrieve a customerToCustomerRelationship with the given id",
+                "operationId": "CustomerRelationshipRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToCustomerRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "customerIdentifier",
+                                "relationshipType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneCustomerRelationship"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/communicationPreferences": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve all related customerCommunicationPreferences",
+                "operationId": "IndividualToCommunicationPreferenceRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerCommunicationPreferences]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "category",
+                                "deliveryMethod",
+                                "preferenceType",
+                                "termsAndConditions"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCommunicationPreferences"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/emailAddress": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve the related customerEmailAddress",
+                "operationId": "OrganizationToEmailAddressRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmailAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "emailAddress",
+                                "invalidEmailAddressReason",
+                                "noEmailDoNotAskIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneEmailAddress"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/individualCustomer": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve the related individualCustomer",
+                "operationId": "CustomerToIndividualRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[individualCustomers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "birthDate",
+                                "citizenship",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "deathDate",
+                                "deathNotificationIndicator",
+                                "doNotCallIndicator",
+                                "doNotMailIndicator",
+                                "driversLicense",
+                                "emailAddress",
+                                "employment",
+                                "gender",
+                                "genderIdentity",
+                                "identifier",
+                                "individualNames",
+                                "informalName",
+                                "informationSharing",
+                                "languageAccommodation",
+                                "languages",
+                                "maritalStatus",
+                                "newIdentifier",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "driversLicense",
+                                "emailAddress",
+                                "employment",
+                                "individualNames",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "companyName",
+                        "in": "query",
+                        "description": "for customers who have elected to limit sharing of information between companies, providing this parameter will retrieve <a href=\"https://s.f/dnshf\">select attributes</a> from a secondary data source (a point in time affiliate specific snapshot) if one exists. If you're <b>not sure what this is, you probably don't need it.</b>",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneIndividualCustomer"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/postalAddresses": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve all related customerPostalAddresses",
+                "operationId": "OrganizationToPostalAddressRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerPostalAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "addressIdentifier",
+                                "addressLines",
+                                "addressType",
+                                "city",
+                                "country",
+                                "postalCode",
+                                "primaryIndicator",
+                                "specialHandling",
+                                "specialHandlingType",
+                                "standardization",
+                                "stateProvince",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyPostalAddresses"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerDriversLicenses": {
+            "get": {
+                "tags": [
+                    "customerDriversLicenses"
+                ],
+                "summary": "retrieve all customerDriversLicenses",
+                "operationId": "DriversLicenseRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerDriversLicenses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "stateProvince"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyDriversLicenses"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerDriversLicenses/{id}": {
+            "get": {
+                "tags": [
+                    "customerDriversLicenses"
+                ],
+                "summary": "retrieve a customerDriversLicense with the given id",
+                "operationId": "DriversLicenseRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerDriversLicenses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "number",
+                                "stateProvince"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneDriversLicense"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerEmailAddresses": {
+            "get": {
+                "tags": [
+                    "customerEmailAddresses"
+                ],
+                "summary": "retrieve all customerEmailAddresses",
+                "operationId": "EmailAddressRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmailAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "emailAddress",
+                                "invalidEmailAddressReason",
+                                "noEmailDoNotAskIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyEmailAddresses"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerEmailAddresses/{id}": {
+            "get": {
+                "tags": [
+                    "customerEmailAddresses"
+                ],
+                "summary": "retrieve a customerEmailAddress with the given id",
+                "operationId": "EmailAddressRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmailAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "emailAddress",
+                                "invalidEmailAddressReason",
+                                "noEmailDoNotAskIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneEmailAddress"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/postalAddresses": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve all related customerPostalAddresses",
+                "operationId": "CustomerToPostalAddressRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerPostalAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "addressIdentifier",
+                                "addressLines",
+                                "addressType",
+                                "city",
+                                "country",
+                                "postalCode",
+                                "primaryIndicator",
+                                "specialHandling",
+                                "specialHandlingType",
+                                "standardization",
+                                "stateProvince",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyPostalAddresses"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}/postalAddresses": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "for the individualCustomer with the given id, retrieve all related customerPostalAddresses",
+                "operationId": "IndividualToPostalAddressRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerPostalAddresses]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "addressIdentifier",
+                                "addressLines",
+                                "addressType",
+                                "city",
+                                "country",
+                                "postalCode",
+                                "primaryIndicator",
+                                "specialHandling",
+                                "specialHandlingType",
+                                "standardization",
+                                "stateProvince",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyPostalAddresses"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/telephones": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve all related customerTelephones",
+                "operationId": "OrganizationToTelephoneRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTelephones]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "extension",
+                                "number",
+                                "undeliverableTextIndicator",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyTelephones"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/organizationCustomer": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve the related organizationCustomer",
+                "operationId": "CustomerToOrganizationRepository.findOneRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[organizationCustomers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "emailAddress",
+                                "identifier",
+                                "industry",
+                                "languages",
+                                "newIdentifier",
+                                "organizationEarnings",
+                                "organizationNames",
+                                "organizationType",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "emailAddress",
+                                "organizationNames",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneOrganizationCustomer"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/organizationNames": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve all related organizationCustomerNames",
+                "operationId": "OrganizationToOrganizationNameRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[organizationCustomerNames]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "name",
+                                "nameIdentifier",
+                                "primaryIndicator"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyOrganizationNames"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerTelephones": {
+            "get": {
+                "tags": [
+                    "customerTelephones"
+                ],
+                "summary": "retrieve all customerTelephones",
+                "operationId": "TelephoneRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTelephones]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "extension",
+                                "number",
+                                "undeliverableTextIndicator",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyTelephones"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerTelephones/{id}": {
+            "get": {
+                "tags": [
+                    "customerTelephones"
+                ],
+                "summary": "retrieve a customerTelephone with the given id",
+                "operationId": "TelephoneRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTelephones]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "extension",
+                                "number",
+                                "undeliverableTextIndicator",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneTelephone"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/telephones": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve all related customerTelephones",
+                "operationId": "CustomerToTelephoneRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerTelephones]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "extension",
+                                "number",
+                                "undeliverableTextIndicator",
+                                "usage"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyTelephones"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomers": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "retrieve all individualCustomers",
+                "operationId": "IndividualCustomerRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[identifier]",
+                        "in": "query",
+                        "description": "filter by identifier (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[individualCustomers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "birthDate",
+                                "citizenship",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "deathDate",
+                                "deathNotificationIndicator",
+                                "doNotCallIndicator",
+                                "doNotMailIndicator",
+                                "driversLicense",
+                                "emailAddress",
+                                "employment",
+                                "gender",
+                                "genderIdentity",
+                                "identifier",
+                                "individualNames",
+                                "informalName",
+                                "informationSharing",
+                                "languageAccommodation",
+                                "languages",
+                                "maritalStatus",
+                                "newIdentifier",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "driversLicense",
+                                "emailAddress",
+                                "employment",
+                                "individualNames",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "companyName",
+                        "in": "query",
+                        "description": "for customers who have elected to limit sharing of information between companies, providing this parameter will retrieve <a href=\"https://s.f/dnshf\">select attributes</a> from a secondary data source (a point in time affiliate specific snapshot) if one exists. If you're <b>not sure what this is, you probably don't need it.</b>",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyIndividualCustomers"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "451": {
+                        "description": "Unavailable For Legal Reasons."
+                    }
+                }
+            }
+        },
+        "/individualCustomers/{id}": {
+            "get": {
+                "tags": [
+                    "individualCustomers"
+                ],
+                "summary": "retrieve an individualCustomer with the given id",
+                "operationId": "IndividualCustomerRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[individualCustomers]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "birthDate",
+                                "citizenship",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "customerType",
+                                "deathDate",
+                                "deathNotificationIndicator",
+                                "doNotCallIndicator",
+                                "doNotMailIndicator",
+                                "driversLicense",
+                                "emailAddress",
+                                "employment",
+                                "gender",
+                                "genderIdentity",
+                                "identifier",
+                                "individualNames",
+                                "informalName",
+                                "informationSharing",
+                                "languageAccommodation",
+                                "languages",
+                                "maritalStatus",
+                                "newIdentifier",
+                                "postalAddresses",
+                                "subjectToCASLIndicator",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "include",
+                        "in": "query",
+                        "description": "include related resources",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "agentRelationships",
+                                "communicationPreferences",
+                                "customerRelationships",
+                                "driversLicense",
+                                "emailAddress",
+                                "employment",
+                                "individualNames",
+                                "postalAddresses",
+                                "taxIdentification",
+                                "telephones"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    },
+                    {
+                        "name": "companyName",
+                        "in": "query",
+                        "description": "for customers who have elected to limit sharing of information between companies, providing this parameter will retrieve <a href=\"https://s.f/dnshf\">select attributes</a> from a secondary data source (a point in time affiliate specific snapshot) if one exists. If you're <b>not sure what this is, you probably don't need it.</b>",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneIndividualCustomer"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "404": {
+                        "description": "Not Found."
+                    },
+                    "451": {
+                        "description": "Unavailable For Legal Reasons."
+                    }
+                }
+            }
+        },
+        "/customerEmployments": {
+            "get": {
+                "tags": [
+                    "customerEmployments"
+                ],
+                "summary": "retrieve all customerEmployments",
+                "operationId": "EmploymentRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmployments]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "businessOwnerIndicator",
+                                "employerName",
+                                "jobTitle",
+                                "jobTitleStartDate",
+                                "occupation",
+                                "status"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyEmployments"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerEmployments/{id}": {
+            "get": {
+                "tags": [
+                    "customerEmployments"
+                ],
+                "summary": "retrieve a customerEmployment with the given id",
+                "operationId": "EmploymentRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerEmployments]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "businessOwnerIndicator",
+                                "employerName",
+                                "jobTitle",
+                                "jobTitleStartDate",
+                                "occupation",
+                                "status"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneEmployment"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/agentRelationships": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve all related customerToAgentRelationships",
+                "operationId": "OrganizationToAgentRelationshipRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToAgentRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "associateIdentifier",
+                                "relationshipType",
+                                "startDate"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyAgentRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{id}/agentRelationships": {
+            "get": {
+                "tags": [
+                    "customers"
+                ],
+                "summary": "for the customer with the given id, retrieve all related customerToAgentRelationships",
+                "operationId": "CustomerToAgentRelationshipRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToAgentRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "associateIdentifier",
+                                "relationshipType",
+                                "startDate"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyAgentRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerCommunicationPreferences": {
+            "get": {
+                "tags": [
+                    "customerCommunicationPreferences"
+                ],
+                "summary": "retrieve all customerCommunicationPreferences",
+                "operationId": "CommunicationPreferenceRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerCommunicationPreferences]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "category",
+                                "deliveryMethod",
+                                "preferenceType",
+                                "termsAndConditions"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCommunicationPreferences"
+                        }
+                    }
+                }
+            }
+        },
+        "/customerCommunicationPreferences/{id}": {
+            "get": {
+                "tags": [
+                    "customerCommunicationPreferences"
+                ],
+                "summary": "retrieve a customerCommunicationPreference with the given id",
+                "operationId": "CommunicationPreferenceRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerCommunicationPreferences]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "approval",
+                                "category",
+                                "deliveryMethod",
+                                "preferenceType",
+                                "termsAndConditions"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneCommunicationPreference"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizationCustomers/{id}/customerRelationships": {
+            "get": {
+                "tags": [
+                    "organizationCustomers"
+                ],
+                "summary": "for the organizationCustomer with the given id, retrieve all related customerToCustomerRelationships",
+                "operationId": "OrganizationToCustomerRelationshipRepository.findManyRelationsUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[customerToCustomerRelationships]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "customerIdentifier",
+                                "relationshipType"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyCustomerRelationships"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomerNames": {
+            "get": {
+                "tags": [
+                    "individualCustomerNames"
+                ],
+                "summary": "retrieve all individualCustomerNames",
+                "operationId": "IndividualNameRepository.findAllUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "filter[id]",
+                        "in": "query",
+                        "description": "filter by resource id (10 maximum)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[individualCustomerNames]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "firstName",
+                                "lastName",
+                                "middleName",
+                                "nameIdentifier",
+                                "prefix",
+                                "primaryIndicator",
+                                "professionalDesignation",
+                                "suffix"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/ManyIndividualNames"
+                        }
+                    }
+                }
+            }
+        },
+        "/individualCustomerNames/{id}": {
+            "get": {
+                "tags": [
+                    "individualCustomerNames"
+                ],
+                "summary": "retrieve a individualCustomerName with the given id",
+                "operationId": "IndividualNameRepository.findOneUsingGET",
+                "produces": [
+                    "application/vnd.api+json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "resource id",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "fields[individualCustomerNames]",
+                        "in": "query",
+                        "description": "retrieve specific fields",
+                        "required": false,
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "firstName",
+                                "lastName",
+                                "middleName",
+                                "nameIdentifier",
+                                "prefix",
+                                "primaryIndicator",
+                                "professionalDesignation",
+                                "suffix"
+                            ]
+                        },
+                        "collectionFormat": "multi"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "../swagger-resources/reference#/definitions/OneIndividualName"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Industry": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "Language": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "OrganizationCustomerAttributes": {
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "type": "string"
+                },
+                "newIdentifier": {
+                    "type": "string"
+                },
+                "customerType": {
+                    "type": "string"
+                },
+                "subjectToCASLIndicator": {
+                    "type": "boolean"
+                },
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Language"
+                    }
+                },
+                "organizationType": {
+                    "type": "string"
+                },
+                "industry": {
+                    "$ref": "#/definitions/Industry"
+                },
+                "organizationEarnings": {
+                    "$ref": "#/definitions/OrganizationEarnings"
+                }
+            }
+        },
+        "OrganizationEarnings": {
+            "type": "object",
+            "required": [
+                "revenueAmount"
+            ],
+            "properties": {
+                "revenueAmount": {
+                    "type": "string"
+                }
+            }
+        },
+        "PostalAddressAttributes": {
+            "type": "object",
+            "properties": {
+                "addressIdentifier": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "standardization": {
+                    "type": "string"
+                },
+                "stateProvince": {
+                    "type": "string"
+                },
+                "addressLines": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "usage": {
+                    "type": "string"
+                },
+                "addressType": {
+                    "type": "string"
+                },
+                "primaryIndicator": {
+                    "type": "boolean"
+                },
+                "specialHandling": {
+                    "type": "string"
+                },
+                "specialHandlingType": {
+                    "type": "string"
+                }
+            }
+        },
+        "CustomerAttributes": {
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "type": "string"
+                },
+                "newIdentifier": {
+                    "type": "string"
+                },
+                "customerType": {
+                    "type": "string"
+                },
+                "subjectToCASLIndicator": {
+                    "type": "boolean"
+                },
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Language"
+                    }
+                }
+            }
+        },
+        "CustomerRelationshipAttributes": {
+            "type": "object",
+            "properties": {
+                "customerIdentifier": {
+                    "type": "string"
+                },
+                "relationshipType": {
+                    "type": "string"
+                }
+            }
+        },
+        "TaxIdentificationAttributes": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "taxIdentificationType": {
+                    "type": "string"
+                }
+            }
+        },
+        "CommunicationPreferenceAttributes": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "deliveryMethod": {
+                    "type": "string"
+                },
+                "preferenceType": {
+                    "type": "string"
+                },
+                "approval": {
+                    "type": "string"
+                },
+                "termsAndConditions": {
+                    "$ref": "#/definitions/TermsAndConditions"
+                }
+            }
+        },
+        "TermsAndConditions": {
+            "type": "object",
+            "required": [
+                "termsAndConditionsType",
+                "version"
+            ],
+            "properties": {
+                "termsAndConditionsType": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "AgentRelationshipAttributes": {
+            "type": "object",
+            "properties": {
+                "relationshipType": {
+                    "type": "string"
+                },
+                "associateIdentifier": {
+                    "type": "string"
+                },
+                "startDate": {
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
+        "OrganizationNameAttributes": {
+            "type": "object",
+            "properties": {
+                "nameIdentifier": {
+                    "type": "string"
+                },
+                "primaryIndicator": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "EmailAddressAttributes": {
+            "type": "object",
+            "properties": {
+                "emailAddress": {
+                    "type": "string"
+                },
+                "invalidEmailAddressReason": {
+                    "type": "string"
+                },
+                "noEmailDoNotAskIndicator": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "EmploymentAttributes": {
+            "type": "object",
+            "properties": {
+                "businessOwnerIndicator": {
+                    "type": "boolean"
+                },
+                "employerName": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "jobTitle": {
+                    "type": "string"
+                },
+                "jobTitleStartDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "occupation": {
+                    "type": "string"
+                }
+            }
+        },
+        "DriversLicenseAttributes": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "stateProvince": {
+                    "type": "string"
+                }
+            }
+        },
+        "TelephoneAttributes": {
+            "type": "object",
+            "properties": {
+                "number": {
+                    "type": "string"
+                },
+                "extension": {
+                    "type": "string"
+                },
+                "usage": {
+                    "type": "string"
+                },
+                "undeliverableTextIndicator": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "ManyResources": {
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Resource"
+                    }
+                }
+            }
+        },
+        "Resource": {
+            "type": "object",
+            "required": [
+                "id",
+                "links",
+                "type"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "links": {
+                    "$ref": "#/definitions/ResourceHateoasLinks"
+                }
+            }
+        },
+        "ResourceHateoasLinks": {
+            "type": "object",
+            "required": [
+                "self"
+            ],
+            "properties": {
+                "self": {
+                    "type": "string"
+                }
+            }
+        },
+        "IndividualNameAttributes": {
+            "type": "object",
+            "properties": {
+                "nameIdentifier": {
+                    "type": "string"
+                },
+                "primaryIndicator": {
+                    "type": "boolean"
+                },
+                "prefix": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "middleName": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "suffix": {
+                    "type": "string"
+                },
+                "professionalDesignation": {
+                    "type": "string"
+                }
+            }
+        },
+        "Citizenship": {
+            "type": "object",
+            "required": [
+                "country"
+            ],
+            "properties": {
+                "country": {
+                    "type": "string"
+                }
+            }
+        },
+        "IndividualCustomerAttributes": {
+            "type": "object",
+            "properties": {
+                "identifier": {
+                    "type": "string"
+                },
+                "newIdentifier": {
+                    "type": "string"
+                },
+                "customerType": {
+                    "type": "string"
+                },
+                "subjectToCASLIndicator": {
+                    "type": "boolean"
+                },
+                "languages": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Language"
+                    }
+                },
+                "birthDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "citizenship": {
+                    "$ref": "#/definitions/Citizenship"
+                },
+                "deathDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "deathNotificationIndicator": {
+                    "type": "boolean"
+                },
+                "doNotCallIndicator": {
+                    "type": "boolean"
+                },
+                "doNotMailIndicator": {
+                    "type": "boolean"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "genderIdentity": {
+                    "type": "string"
+                },
+                "informationSharing": {
+                    "$ref": "#/definitions/InformationSharing"
+                },
+                "languageAccommodation": {
+                    "$ref": "#/definitions/LanguageAccommodation"
+                },
+                "maritalStatus": {
+                    "type": "string"
+                },
+                "informalName": {
+                    "type": "string"
+                }
+            }
+        },
+        "InformationSharing": {
+            "type": "object",
+            "required": [
+                "doNotShareIndicator",
+                "healthOnlyProductsIndicator",
+                "protectedPersonIndicator",
+                "providedPrivacyPolicyIndicator"
+            ],
+            "properties": {
+                "doNotShareIndicator": {
+                    "type": "boolean"
+                },
+                "healthOnlyProductsIndicator": {
+                    "type": "boolean"
+                },
+                "protectedPersonIndicator": {
+                    "type": "boolean"
+                },
+                "providedPrivacyPolicyIndicator": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "LanguageAccommodation": {
+            "type": "object",
+            "required": [
+                "hearingAccommodationIndicator"
+            ],
+            "properties": {
+                "hearingAccommodationIndicator": {
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,650 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Service to retrieve information on books of business and offices.",
+    "version" : "1.1.0",
+    "title" : "bobandofficeinquiryapi",
+    "termsOfService" : "http://localhost/myservice",
+    "contact" : {
+      "name" : "Dillon Wallin",
+      "email" : "dillon.wallin.trpe@statefarm.com"
+    },
+    "license" : {
+      "name" : "State Farm",
+      "url" : "http://www.statefarm.com"
+    }
+  },
+  "host" : "associateretrieves-env1.cfapps-71a.opr.test.statefarm.org",
+  "basePath" : "/bobandofficeinquiryapi",
+  "tags" : [
+    {
+      "name" : "BooksOfBusiness",
+      "description" : "Controller API for book of business retrieval functionality."
+    }
+  ],
+  "paths" : {
+    "/booksOfBusiness" : {
+      "get" : {
+        "tags" : [
+          "BooksOfBusiness"
+        ],
+        "summary" : "Retrieves a Book of Business by the specified book code.",
+        "description" : "Book Code is required.",
+        "operationId" : "getBookOfBusinessByStateCodeUsingGET",
+        "produces" : [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : true,
+            "type" : "string"
+          },
+          {
+            "name" : "bookCodes",
+            "in" : "query",
+            "description" : "Book Codes",
+            "required" : true,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/List"
+            },
+            "collectionFormat" : "multi"
+          },
+          {
+            "name" : "includes",
+            "in" : "query",
+            "description" : "Specifies the related data to retrieve",
+            "required" : false,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/List"
+            },
+            "collectionFormat" : "multi",
+            "enum" : [
+              "servicingAssociate",
+              "office",
+              "servicingHierarchy",
+              "registration"
+            ]
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "object"
+              }
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/booksOfBusiness/{bookOfBusinessId}" : {
+      "get" : {
+        "tags" : [
+          "BooksOfBusiness"
+        ],
+        "summary" : "Retrieves a Book of Business by the specified id.",
+        "description" : "Id is required.",
+        "operationId" : "getBookOfBusinessByIdUsingGET",
+        "produces" : [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : true,
+            "type" : "string"
+          },
+          {
+            "name" : "bookOfBusinessId",
+            "in" : "path",
+            "description" : "bookOfBusinessId",
+            "required" : true,
+            "type" : "string"
+          },
+          {
+            "name" : "includes",
+            "in" : "query",
+            "description" : "Specifies the related data to retrieve",
+            "required" : false,
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/List"
+            },
+            "collectionFormat" : "multi",
+            "enum" : [
+              "servicingAssociate",
+              "office",
+              "servicingHierarchy",
+              "registration"
+            ]
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/BookOfBusinessResource"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    }
+  },
+  "definitions" : {
+    "AddressTO" : {
+      "type" : "object",
+      "properties" : {
+        "city" : {
+          "type" : "string"
+        },
+        "cityCode" : {
+          "type" : "string"
+        },
+        "countryName" : {
+          "type" : "string"
+        },
+        "countyCode" : {
+          "type" : "string"
+        },
+        "countyName" : {
+          "type" : "string"
+        },
+        "state" : {
+          "type" : "string"
+        },
+        "streetOrPOBox" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "zip" : {
+          "type" : "string"
+        }
+      },
+      "title" : "AddressTO"
+    },
+    "AgencyDirector" : {
+      "type" : "object",
+      "properties" : {
+        "agentRelationshipEndDate" : {
+          "type" : "string"
+        },
+        "agentRelationshipStartDate" : {
+          "type" : "string"
+        },
+        "associateId" : {
+          "type" : "string"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        }
+      },
+      "title" : "AgencyDirector"
+    },
+    "AgencyFieldOffice" : {
+      "type" : "object",
+      "properties" : {
+        "agentRelationshipEndDate" : {
+          "type" : "string"
+        },
+        "agentRelationshipStartDate" : {
+          "type" : "string"
+        },
+        "associateId" : {
+          "type" : "string"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        }
+      },
+      "title" : "AgencyFieldOffice"
+    },
+    "AssociateNameTO" : {
+      "type" : "object",
+      "properties" : {
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "middleName" : {
+          "type" : "string"
+        },
+        "suffix" : {
+          "type" : "string"
+        }
+      },
+      "title" : "AssociateNameTO"
+    },
+    "BookOfBusinessResource" : {
+      "type" : "object",
+      "properties" : {
+        "_links" : {
+          "type" : "array",
+          "xml" : {
+            "name" : "link",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "items" : {
+            "$ref" : "#/definitions/Link"
+          }
+        },
+        "agencyDirector" : {
+          "xml" : {
+            "name" : "agencyDirector",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/AgencyDirector"
+        },
+        "agencyFieldOffice" : {
+          "xml" : {
+            "name" : "agencyFieldOffice",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/AgencyFieldOffice"
+        },
+        "bookCode" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "bookCode",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "bookOfBusinessId" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "bookOfBusinessId",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "creationDate" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "creationDate",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "name" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "name",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "office" : {
+          "xml" : {
+            "name" : "office",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/OfficeTO"
+        },
+        "regionCode" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "regionCode",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "registration" : {
+          "xml" : {
+            "name" : "registration",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/RegistrationTO"
+        },
+        "salesTerritory" : {
+          "xml" : {
+            "name" : "salesTerritory",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/Territory"
+        },
+        "servicingAssociate" : {
+          "type" : "object"
+        },
+        "servicingHierarchy" : {
+          "xml" : {
+            "name" : "servicingHierarchy",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/ServicingHierarchyTO"
+        },
+        "status" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "status",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "terminationDate" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "terminationDate",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        },
+        "type" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "type",
+            "attribute" : false,
+            "wrapped" : false
+          }
+        }
+      },
+      "title" : "BookOfBusinessResource",
+      "description" : "Associate Book Of Business Model for the response"
+    },
+    "BooksForStateCodeResource" : {
+      "type" : "object",
+      "properties" : {
+        "_links" : {
+          "type" : "array",
+          "xml" : {
+            "name" : "link",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "items" : {
+            "$ref" : "#/definitions/Link"
+          }
+        },
+        "booksOfBusiness" : {
+          "type" : "array",
+          "xml" : {
+            "name" : "booksOfBusiness",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "items" : {
+            "$ref" : "#/definitions/BookOfBusinessResource"
+          }
+        }
+      },
+      "title" : "BooksForStateCodeResource",
+      "xml" : {
+        "name" : "BooksForStateCodeResource",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "Link" : {
+      "type" : "object",
+      "properties" : {
+        "deprecation" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "deprecation",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        },
+        "href" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "href",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        },
+        "hreflang" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "hreflang",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        },
+        "media" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "media",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        },
+        "rel" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "rel",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        },
+        "templated" : {
+          "type" : "boolean"
+        },
+        "title" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "title",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        },
+        "type" : {
+          "type" : "string",
+          "xml" : {
+            "name" : "type",
+            "attribute" : true,
+            "wrapped" : false
+          }
+        }
+      },
+      "title" : "Link"
+    },
+    "OfficeTO" : {
+      "type" : "object",
+      "properties" : {
+        "associateId" : {
+          "type" : "string"
+        },
+        "businessTelephone" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhoneNumberTO"
+          }
+        },
+        "historicalContactAddresses" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AddressTO"
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "postalAddresses" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AddressTO"
+          }
+        },
+        "type" : {
+          "type" : "string"
+        }
+      },
+      "title" : "OfficeTO"
+    },
+    "PhoneNumberTO" : {
+      "type" : "object",
+      "properties" : {
+        "number" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PhoneNumberTO"
+    },
+    "RegistrationTO" : {
+      "type" : "object",
+      "properties" : {
+        "endDate" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "registrationType" : {
+          "type" : "string"
+        },
+        "startDate" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        },
+        "vendorId" : {
+          "type" : "string"
+        }
+      },
+      "title" : "RegistrationTO"
+    },
+    "SalesLeader" : {
+      "type" : "object",
+      "properties" : {
+        "alias" : {
+          "type" : "string"
+        },
+        "associateId" : {
+          "type" : "string"
+        },
+        "businessAddress" : {
+          "$ref" : "#/definitions/AddressTO"
+        },
+        "emailAddress" : {
+          "type" : "string"
+        },
+        "legalName" : {
+          "$ref" : "#/definitions/AssociateNameTO"
+        },
+        "preferredName" : {
+          "$ref" : "#/definitions/AssociateNameTO"
+        },
+        "stateAgencyCode" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        }
+      },
+      "title" : "SalesLeader"
+    },
+    "ServicingHierarchyTO" : {
+      "type" : "object",
+      "properties" : {
+        "salesLeader" : {
+          "$ref" : "#/definitions/SalesLeader"
+        },
+        "vicePresidentOfAgency" : {
+          "$ref" : "#/definitions/VicePresidentOfAgency"
+        }
+      },
+      "title" : "ServicingHierarchyTO"
+    },
+    "Territory" : {
+      "type" : "object",
+      "properties" : {
+        "associateId" : {
+          "type" : "string"
+        },
+        "bookRelationshipEndDate" : {
+          "type" : "string"
+        },
+        "bookRelationshipStartDate" : {
+          "type" : "string"
+        },
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Territory"
+    },
+    "VicePresidentOfAgency" : {
+      "type" : "object",
+      "properties" : {
+        "alias" : {
+          "type" : "string"
+        },
+        "associateId" : {
+          "type" : "string"
+        },
+        "businessAddress" : {
+          "$ref" : "#/definitions/AddressTO"
+        },
+        "emailAddress" : {
+          "type" : "string"
+        },
+        "legalName" : {
+          "$ref" : "#/definitions/AssociateNameTO"
+        },
+        "preferredName" : {
+          "$ref" : "#/definitions/AssociateNameTO"
+        },
+        "stateAgencyCode" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        }
+      },
+      "title" : "VicePresidentOfAgency"
+    }
+  }
+}

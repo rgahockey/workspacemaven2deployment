@@ -1,0 +1,4231 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "\n\n<h4>This API retrieves policy data from legacy systems (Auto & Fire) as well as Policy Center - Business Lines (Auto & Fire) and Personal Lines (Auto Private Passenger). The ouput can be specified in either PCMM or AMM format.</h4>\n        \n<h4>Input Parameter Guidance</h4>   \n    \nThe agreementAccessKey, agreementIndexId, and policySearchKey are mutually exclusive - only one of the three is required. The existence of the 'filters' query parameter\nspecifies that detail data is to be returned, and if left off, only summary data will returned. Additionally, the physicalObjNumber & physicalObjectIdentifier are mutually exclusive--these parameters represent the car number.\n\n**Note** For AMM format, add the following parameter &dataFormat=AMM. If this parameter is not passed, the default for a detail call is PCMM.\n         \n* <h5>Sample URL for auto policy detail data with asOfDate and filters specified. Response will be in PCMM format.</h5>     \n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=3521497200&filters=POLICY,RISK,COVERAGE,PHYOBJCT&asOfDate=2019-02-12\n   \n* <h5>Sample URL for PLM (Policy Center - Personal Lines) auto policy detail with filters specified and POID (Physical Object Identifier). Response will be in PCMM format.</h5>     \n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=3520058002&filters=POLICY,RISK,COVERAGE,PHYOBJCT&physicalObjectIdentifier=55401\n\n* <h5>Sample URL for auto policy detail data with no asOfDate and filters specified. Response will be in AMM format.</h5>     \n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=3521497200&filters=POLICY,RISK,COVERAGE,PHYOBJCT&dataFormat=AMM   \n       \n* <h5>Sample URL for fire policy detail data with asOfDate and filters specified. Response will be in PCMM format.</h5>       \n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=016093K8200KF6&asOfDate=2019-02-12&filters=POLICY,RISK,COVERAGE,PHYOBJCT\n   \n* <h5>Sample URL for auto policy summary data. **Note, summary responses are currently on in AMM, so no dataFormat parameter is needed.</h5>\n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=3521497200&asOfDate=2018-01-01\n   \n* <h5>Sample URL for the retrieval of latest term. **Note, this only applies for retrieve detail calls on PMR and FMR policies.</h5>\n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?productLine=A&agreementAccessKey=4330000345&asOfDate=2019-05-19&filters=POLICY,RISK,COVERAGE,PHYOBJCT&retrieveLatestTerm=Y    \n \n* <h5>Sample URL for the policy detail data with asOfDate, sourceSystemCode and filters specified.</h5>\n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?productLine=A&agreementAccessKey=4330000345&asOfDate=2019-05-19&filters=POLICY,RISK,COVERAGE,PHYOBJCT&sourceSystemCode=1\n\n* <h5>Sample URL for auto policy summary data when sourceSystemCode is provided. **Note, summary responses are currently on in AMM, so no dataFormat parameter is needed.</h5>\n   * /PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=3521497200&asOfDate=2018-01-01&sourceSystemCode=24                \n\n<br>   \n**Note** The HTTP parameter **esb_restPath** must be provided for the service to function. In test, an environment suffix is required, and in production, only the base value is required>> 'B2E/REST/PolicyRetrieval-Web_v2'\n\nTo access the Policy Retrieval API in test, use one of the following Domain VIPs with the corresponding esb_restPath HTTP header:\n\n| Domain VIP  | Environment | HTTP Parm: esb_restPath\n| --- |  --- | --- | \n| sfesb-sys.opr.test.statefarm.org/B2E/REST  | TEST1       | B2E/REST/PolicyRetrieval-Web_v2/TEST1 |\n| sfesb-sys.opr.test.statefarm.org/B2E/REST  | SYSTF       | B2E/REST/PolicyRetrieval-Web_v2/SYSTF |\n| sfesb-dev.opr.test.statefarm.org/B2E/REST  | SYSTD       | B2E/REST/PolicyRetrieval-Web_v2/SYSTD |  \n| sfesb-sys.opr.test.statefarm.org/B2E/REST  | TEST3       | B2E/REST/PolicyRetrieval-Web_v2/TEST3 |\n| sfesb-sys.opr.test.statefarm.org/B2E/REST  | TEST5       | B2E/REST/PolicyRetrieval-Web_v2/TEST5 |\n| sfesb-sys.opr.test.statefarm.org/B2E/REST  | SYSTE       | B2E/REST/PolicyRetrieval-Web_v2/SYSTE |   \n| sfesb-qc.opr.test.statefarm.org/B2E/REST   | Performance | B2E/REST/PolicyRetrieval-Web_v2       |  \n| sfesb-prep.opr.test.statefarm.org/B2E/REST | Pre-Prod    | B2E/REST/PolicyRetrieval-Web_v2       |      \n| sfesb.opr.statefarm.org/B2E/REST           | Production  | B2E/REST/PolicyRetrieval-Web_v2       |\n\n * **Full Auto URL example**\n    * http://sfesb-sys.opr.test.statefarm.org/B2E/REST/PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService/policies?agreementAccessKey=131C002680&filters=POLICY,RISK,COVERAGE,PHYOBJCT&dataFormat=AMM \n \n * **AMM Maven Dependency**\n    * &lt;dependency&gt;\n      &lt;groupId&gt;sf.psdata.amm&lt;/groupId&gt;\n      &lt;artifactId&gt;agreement-message-usage&lt;/artifactId&gt;\n      &lt;version&gt;**2.0.1-RC-55**&lt;/version&gt; \n      &lt;/dependency&gt;\n \n * **PCMM Schema**\n   * <a href=\"https://collab.sfcollab.org/sites/WSS006299/Shared%20Documents/DVL%20PolicyRetrieval%20PCMM%20Response.docx?d=wc3e66debe3764c90bd2d0a0949e98458\">**PCMM Schema**</a>\n\n * **Error Scenarios**\n   * <a href=\"https://collab.sfcollab.org/sites/WSS006299/_layouts/15/WopiFrame.aspx?sourcedoc={BD4A55B6-DFE9-4F9C-B713-EA10F3432BBF}&file=DVL_Error_Handling_2.0.xlsx&action=default\">**DVL Error Handling**</a>  \n \n## Contact\nManager - Jody Gaydos(jpfz)  \nProduct Owner - Michelle Clemons(jial)\n\n**Email:** DL-ET-DataVirtualization-WG9197\n",
+    "version" : "1.0.0",
+    "title" : "Data Virtualization - Policy Data Retrieval",
+    "contact" : {
+      "name" : "SDE"
+    },
+    "license" : {}
+  },
+  "host" : "dvl-policyretrieval-api.app-71a.opr.test.statefarm.org",
+  "basePath" : "/PolicyRetrieval-Web_v2/services/rest/IRetrievePolicyService",
+  "tags" : [
+    {
+      "name" : "Policy Retrieval API",
+      "description" : "Policy Data Retrieval"
+    }
+  ],
+  "paths" : {
+    "/policies" : {
+      "get" : {
+        "tags" : [
+          "Policy Retrieval API"
+        ],
+        "summary" : "retrievePolicy",
+        "description" : "The example response/model shown below contains a representation of both PCMM & AMM, with the PCMM being first, followed by AMM. Within the PolicyResponseObject, there is an InsurancePolicy object, which represents the PCMM, and a Policy object which represents AMM. Please see the input parameter documentation below.",
+        "operationId" : "retrievePolicyUsingGET",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "agreementAccessKey",
+            "in" : "query",
+            "description" : "Agreement Access Key (Required, if not providing a policySearchKey or agreementIndexId)",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "agreementIndexId",
+            "in" : "query",
+            "description" : "Agreement Index Id (Required, if not providing a agreementAccessKey or policySearchKey)",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "asOfDate",
+            "in" : "query",
+            "description" : "As of Date, allows for narrowing by effective date",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "dataFormat",
+            "in" : "query",
+            "description" : "Data Format Switch. PCMM or AMM format switch. Usage: If no parameter is provided, output defaults to PCMM, otherwire pass dataFormat=AMM if desired.",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "filters",
+            "in" : "query",
+            "description" : "The filters parameter specifies coverages in a comma separated list, and must pass at least one value. If this parameter is passed, detail policy data will be provided, otherwise it will be summary.Usage: filters=POLICY,RISK,COVERAGE,PHYOBJCT",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "physicalObjNumber",
+            "in" : "query",
+            "description" : "Physical Object Number [vehicle number]. This only applies to Legacy PMR Auto policies. If this is not provided, a list of all vehicles for the given policy will be returned.",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "physicalObjectIdentifier",
+            "in" : "query",
+            "description" : "Physical Object Identifier [vehicle number]. This only applies to Personal Lines (PLM) Auto policies. If this is not provided, a list of all vehicles for the given policy will be returned in PCMM format.",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "policySearchKey",
+            "in" : "query",
+            "description" : "Policy Search Key (Required, if not providing agreementIndexId or agreementAccessKey)",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "policyTermPublicIdentifier",
+            "in" : "query",
+            "description" : "Policy Term Public Identifier (Only applies to PLM policies). If this is provided, all other parameters are ignored.",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "retrieveLatestTerm",
+            "in" : "query",
+            "description" : "Retrieve latest term indicator. An indicator that when set to 'Y', will result in the latest term being retrieved when a term for the effective date(asOfDate) is not found.",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          },
+          {
+            "name" : "sourceSystemCode",
+            "in" : "query",
+            "description" : "Source System Code Switch and the possible values are 1,15,24,25,26. Usage: If sourceSystemCode is provided, we eliminate the AI call to retrieve policy information ",
+            "required" : false,
+            "type" : "string",
+            "allowEmptyValue" : false
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Policy data successfully retrieved.",
+            "schema" : {
+              "$ref" : "#/definitions/PolicyRetrievalResponse"
+            }
+          },
+          "400" : {
+            "description" : "Invalid input."
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Unexpected System failure."
+          }
+        },
+        "deprecated" : false
+      }
+    }
+  },
+  "definitions" : {
+    "AdditionalEquipment" : {
+      "type" : "object",
+      "properties" : {
+        "equipmentItemTypeText" : {
+          "type" : "string"
+        },
+        "equipmentMakeName" : {
+          "type" : "string"
+        },
+        "equipmentManufactureYear" : {
+          "type" : "string"
+        },
+        "equipmentManufacturerSuggestedRetailPriceAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "equipmentSerialNumber" : {
+          "type" : "string"
+        }
+      },
+      "title" : "AdditionalEquipment",
+      "xml" : {
+        "name" : "additionalEquipment2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "Agent" : {
+      "type" : "object",
+      "properties" : {
+        "agentCode" : {
+          "type" : "string"
+        },
+        "bookOfBusinessIdentifier" : {
+          "type" : "string"
+        },
+        "stateCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Agent"
+    },
+    "BusinessModelExecution" : {
+      "type" : "object",
+      "properties" : {
+        "businessModelExecutionIdentifier" : {
+          "type" : "string"
+        },
+        "businessModelScoreUsageText" : {
+          "type" : "string"
+        },
+        "executionSourceName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "BusinessModelExecution"
+    },
+    "Cargo" : {
+      "type" : "object",
+      "properties" : {
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "categoryName" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "device" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/device"
+          }
+        },
+        "dieselFuelIndicator" : {
+          "type" : "string"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "engineDisplacementCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineHorsepowerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "filingNumber" : {
+          "type" : "string"
+        },
+        "filingRequiredIndicator" : {
+          "type" : "string"
+        },
+        "inspection" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Inspection"
+          }
+        },
+        "irgCollisionCode" : {
+          "type" : "string"
+        },
+        "irgComprehensiveCode" : {
+          "type" : "string"
+        },
+        "lengthCount" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerDivisionCode" : {
+          "type" : "string"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "manufacturerUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "originalStatedValueAmount" : {
+          "type" : "number"
+        },
+        "physicalObjectPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhysicalObjectPartyRole"
+          }
+        },
+        "physicalObjectSerialNumber" : {
+          "type" : "string"
+        },
+        "physicalObjectSubtypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "physicalObjectTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        },
+        "vehicle" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/vehicle"
+          }
+        },
+        "vinValidationCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Cargo"
+    },
+    "Claim" : {
+      "type" : "object",
+      "properties" : {
+        "highwayLossDataSentIndicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Claim"
+    },
+    "Coverage" : {
+      "type" : "object",
+      "properties" : {
+        "abbreviation" : {
+          "type" : "string"
+        },
+        "actualCashValueIndicator" : {
+          "type" : "string"
+        },
+        "bpcLevelCode" : {
+          "type" : "string"
+        },
+        "coverageCategory" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CoverageCategory"
+          }
+        },
+        "coverageClassCode" : {
+          "type" : "string"
+        },
+        "coverageLine" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CoverageLine"
+          }
+        },
+        "coverageNote" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Note"
+          }
+        },
+        "coveragePremiumAmount" : {
+          "type" : "number"
+        },
+        "coverageProperty" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CoverageProperty"
+          }
+        },
+        "coverageSuspendedIndicator" : {
+          "type" : "string"
+        },
+        "coveredObject" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CoveredObject"
+          }
+        },
+        "fidelityTypeCode" : {
+          "type" : "string"
+        },
+        "inTransitIndicator" : {
+          "type" : "string"
+        },
+        "inflationAdjustment" : {
+          "$ref" : "#/definitions/InflationAdjustment"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "originalEffectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "policyCoverageIndicator" : {
+          "type" : "string"
+        },
+        "rateLevelCode" : {
+          "type" : "string"
+        },
+        "systemName" : {
+          "type" : "string"
+        },
+        "waitingPeriodDayCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "waitingPeriodEndDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      },
+      "title" : "Coverage"
+    },
+    "CoverageCategory" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "systemName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CoverageCategory"
+    },
+    "CoverageGroup" : {
+      "type" : "object",
+      "properties" : {
+        "coverage" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Coverage"
+          }
+        },
+        "coveredObject" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CoveredObject"
+          }
+        }
+      },
+      "title" : "CoverageGroup"
+    },
+    "CoverageLine" : {
+      "type" : "object",
+      "properties" : {
+        "auxiliaryStructureCode" : {
+          "type" : "string"
+        },
+        "bpcLimitCode" : {
+          "type" : "string"
+        },
+        "coverageLineNumber" : {
+          "type" : "string"
+        },
+        "deductibleAmount" : {
+          "type" : "number"
+        },
+        "deductibleCode" : {
+          "type" : "string"
+        },
+        "deductibleTypeCode" : {
+          "type" : "string"
+        },
+        "leadExclusionDiscountCode" : {
+          "type" : "string"
+        },
+        "liabilityLimitCode" : {
+          "type" : "string"
+        },
+        "lineRateMethodCode" : {
+          "type" : "string"
+        },
+        "lineRiskAmount" : {
+          "type" : "number"
+        },
+        "locationNumber" : {
+          "type" : "string"
+        },
+        "minimumCoverageAmount" : {
+          "type" : "number"
+        },
+        "pcoLimitFactorCode" : {
+          "type" : "string"
+        },
+        "poLimitFactorCode" : {
+          "type" : "string"
+        },
+        "preferredProviderDiscountAmount" : {
+          "type" : "number"
+        },
+        "preferredProviderDiscountPercent" : {
+          "type" : "number"
+        },
+        "rateGroupCode" : {
+          "type" : "string"
+        },
+        "specificCoverageCode" : {
+          "type" : "string"
+        },
+        "specificCoverageSubCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CoverageLine"
+    },
+    "CoverageProperty" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "displayValue" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "nonStandardAmountCode" : {
+          "type" : "string"
+        },
+        "systemName" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "valueDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "valueNum" : {
+          "type" : "number"
+        },
+        "valueText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CoverageProperty"
+    },
+    "CoverageSet" : {
+      "type" : "object",
+      "properties" : {
+        "baseFormNumber" : {
+          "type" : "string"
+        },
+        "blanketScheduleCode" : {
+          "type" : "string"
+        },
+        "coverage" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Coverage"
+          }
+        },
+        "coverageGroup" : {
+          "$ref" : "#/definitions/CoverageGroup"
+        },
+        "coverageSetNote" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Note"
+          }
+        },
+        "endorsementForm" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EndorsementForm"
+          }
+        },
+        "legacyPolicyType" : {
+          "type" : "string"
+        },
+        "policyFormCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CoverageSet"
+    },
+    "CoveredObject" : {
+      "type" : "object",
+      "properties" : {
+        "objectDescriptionText" : {
+          "type" : "string"
+        },
+        "objectTypeName" : {
+          "type" : "string"
+        },
+        "partyName" : {
+          "type" : "string"
+        },
+        "relatedObjectNodeID" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CoveredObject"
+    },
+    "Customer" : {
+      "type" : "object",
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string"
+        },
+        "autoClientIdentifier" : {
+          "type" : "string"
+        },
+        "autoDriverIdentifier" : {
+          "type" : "string"
+        },
+        "clientIdentifier" : {
+          "type" : "string"
+        },
+        "customerBirthDate" : {
+          "type" : "string"
+        },
+        "customerDriverProfile" : {
+          "$ref" : "#/definitions/CustomerDriverProfile"
+        },
+        "customerEducations" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CustomerEducation"
+          }
+        },
+        "customerSnapshots" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CustomerSnapshot"
+          }
+        },
+        "customerToCustomerRelationships" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CustomerToCustomerRelationship"
+          }
+        },
+        "driverLicense" : {
+          "$ref" : "#/definitions/DriverLicense"
+        },
+        "genderText" : {
+          "type" : "string"
+        },
+        "originalDriverLicenseDate" : {
+          "type" : "string"
+        },
+        "partyName" : {
+          "$ref" : "#/definitions/PartyName"
+        },
+        "postalAddressIdentifier" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Customer"
+    },
+    "CustomerDriverProfile" : {
+      "type" : "object",
+      "properties" : {
+        "driverTenureValidFromDate" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CustomerDriverProfile"
+    },
+    "CustomerEducation" : {
+      "type" : "object",
+      "properties" : {
+        "educationCourseCompletionDate" : {
+          "type" : "string"
+        },
+        "educationCourseName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CustomerEducation"
+    },
+    "CustomerSnapshot" : {
+      "type" : "object",
+      "properties" : {
+        "fireTenureStartDate" : {
+          "type" : "string"
+        },
+        "militaryCoverageLapseSwitch" : {
+          "type" : "boolean"
+        },
+        "militaryindicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CustomerSnapshot"
+    },
+    "CustomerToCustomerRelationship" : {
+      "type" : "object",
+      "properties" : {
+        "customerRelationshipType" : {
+          "type" : "string"
+        },
+        "relatedCustomerIdentifier" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CustomerToCustomerRelationship"
+    },
+    "Device" : {
+      "type" : "object",
+      "properties" : {
+        "deviceDescriptionText" : {
+          "type" : "string"
+        },
+        "deviceName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Device",
+      "xml" : {
+        "name" : "device2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "DriverLicense" : {
+      "type" : "object",
+      "properties" : {
+        "foreignDriverLicenseTypeText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "DriverLicense"
+    },
+    "DriverRoleVendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "orderStatusText" : {
+          "type" : "string"
+        },
+        "vendorReportRequest" : {
+          "$ref" : "#/definitions/VendorReportRequest"
+        }
+      },
+      "title" : "DriverRoleVendorReportRequest"
+    },
+    "EndorsementForm" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementFormType" : {
+          "type" : "string"
+        },
+        "formDescriptionText" : {
+          "type" : "string"
+        },
+        "formEffectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "formNumber" : {
+          "type" : "string"
+        },
+        "mortgageeReceiveIndicator" : {
+          "type" : "string"
+        },
+        "policyEndorsementIndicator" : {
+          "type" : "string"
+        },
+        "revision" : {
+          "type" : "string"
+        }
+      },
+      "title" : "EndorsementForm"
+    },
+    "GenericCoverage" : {
+      "type" : "object",
+      "properties" : {
+        "coverageAbbreviationCode" : {
+          "type" : "string"
+        },
+        "coverageCode" : {
+          "type" : "string"
+        },
+        "coverageName" : {
+          "type" : "string"
+        },
+        "coverageSuspendedSwitch" : {
+          "type" : "boolean"
+        },
+        "genericCoveragePremiums" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoveragePremium"
+          }
+        },
+        "genericCoveragePropertys" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageProperty"
+          }
+        },
+        "policyCoverageIndicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericCoverage"
+    },
+    "GenericCoverageGroup" : {
+      "type" : "object",
+      "properties" : {
+        "combinedLimitIndicator" : {
+          "type" : "string"
+        },
+        "fullTermCoverageGroupPremiumAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "genericCoverageGroupPropertys" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageGroupProperty"
+          }
+        },
+        "genericCoverages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverage"
+          }
+        },
+        "groupName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericCoverageGroup"
+    },
+    "GenericCoverageGroupProperty" : {
+      "type" : "object",
+      "properties" : {
+        "coverageGroupPropertyCode" : {
+          "type" : "string"
+        },
+        "coverageGroupPropertySubtypeText" : {
+          "type" : "string"
+        },
+        "coverageGroupPropertyTypeText" : {
+          "type" : "string"
+        },
+        "coverageGroupPropertyValueDate" : {
+          "type" : "string"
+        },
+        "coverageGroupPropertyValueNumeric" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "coverageGroupPropertyValueText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericCoverageGroupProperty"
+    },
+    "GenericCoveragePremium" : {
+      "type" : "object",
+      "properties" : {
+        "coveragePremiumExternalReferenceIdentifier" : {
+          "type" : "string"
+        },
+        "coveragePremiumExternalReferenceSourceText" : {
+          "type" : "string"
+        },
+        "fullTermCoveragePremiumAmount" : {
+          "type" : "number",
+          "format" : "double"
+        }
+      },
+      "title" : "GenericCoveragePremium"
+    },
+    "GenericCoverageProperty" : {
+      "type" : "object",
+      "properties" : {
+        "coveragePropertyName" : {
+          "type" : "string"
+        },
+        "coveragePropertySubtypeText" : {
+          "type" : "string"
+        },
+        "coveragePropertyTypeText" : {
+          "type" : "string"
+        },
+        "coveragePropertyValueDate" : {
+          "type" : "string"
+        },
+        "coveragePropertyValueNumeric" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "coveragePropertyValueText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "GenericCoverageProperty"
+    },
+    "GeographicLocation" : {
+      "type" : "object",
+      "properties" : {
+        "cityCode" : {
+          "type" : "string"
+        },
+        "countryCode" : {
+          "type" : "string"
+        },
+        "countyCode" : {
+          "type" : "string"
+        },
+        "countyName" : {
+          "type" : "string"
+        },
+        "latitudeNumber" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "longitudeNumber" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "postalAddress" : {
+          "$ref" : "#/definitions/PostalAddress"
+        }
+      },
+      "title" : "GeographicLocation"
+    },
+    "InflationAdjustment" : {
+      "type" : "object",
+      "properties" : {
+        "adjustmentCode" : {
+          "type" : "string"
+        },
+        "adjustmentDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "indexTypeCode" : {
+          "type" : "string"
+        },
+        "indexValue" : {
+          "type" : "number"
+        },
+        "indexVendorCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InflationAdjustment"
+    },
+    "Inspection" : {
+      "type" : "object",
+      "properties" : {
+        "autoInspectionCode" : {
+          "type" : "string"
+        },
+        "inspectingParty" : {
+          "$ref" : "#/definitions/Party"
+        },
+        "inspectionCategoryCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "inspectionCategoryText" : {
+          "type" : "string"
+        },
+        "inspectionCompletionDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "inspectionIdentificationNumber" : {
+          "type" : "string"
+        },
+        "inspectionRestrictedCovDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "inspectionSourceCode" : {
+          "type" : "string"
+        },
+        "inspectionStatusCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "inspectionStatusReasonCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      },
+      "title" : "Inspection"
+    },
+    "InsurableRisk" : {
+      "type" : "object",
+      "properties" : {
+        "autoBasicPolicyCode" : {
+          "type" : "string"
+        },
+        "autoClassCode" : {
+          "type" : "string"
+        },
+        "claim" : {
+          "$ref" : "#/definitions/Claim"
+        },
+        "fullTermRiskPremiumAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "insurableRiskIdentifier" : {
+          "type" : "string"
+        },
+        "insurableRiskIdentifierSequenceNumber" : {
+          "type" : "string"
+        },
+        "insurableRiskLocation" : {
+          "$ref" : "#/definitions/InsurableRiskLocation"
+        },
+        "insurableRiskPartyRoles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurableRiskPartyRole"
+          }
+        },
+        "insurableRiskPolicyAdministrationSystemIdentifier" : {
+          "$ref" : "#/definitions/InsurableRiskPolicyAdministrationSystemIdentifier"
+        },
+        "insurableRiskStructure" : {
+          "$ref" : "#/definitions/InsurableRiskStructure"
+        },
+        "insurableRiskVehicle" : {
+          "$ref" : "#/definitions/InsurableRiskVehicle"
+        },
+        "policyVehicleSuspendedSwitch" : {
+          "type" : "boolean"
+        },
+        "ratingRiskCategoryCode" : {
+          "type" : "string"
+        },
+        "riskCategoryCode" : {
+          "type" : "string"
+        },
+        "riskGenericCoverageSet" : {
+          "$ref" : "#/definitions/RiskGenericCoverageSet"
+        },
+        "riskGroupCode" : {
+          "type" : "string"
+        },
+        "riskInceptionDate" : {
+          "type" : "string"
+        },
+        "riskLevelPremiumAdjustments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RiskLevelPremiumAdjustment"
+          }
+        },
+        "riskManagementCode" : {
+          "type" : "string"
+        },
+        "riskMarketCode" : {
+          "type" : "string"
+        },
+        "riskNumber" : {
+          "type" : "string"
+        },
+        "riskPrimaryUseText" : {
+          "type" : "string"
+        },
+        "riskRatingRuleCode" : {
+          "type" : "string"
+        },
+        "riskUsageTypeCode" : {
+          "type" : "string"
+        },
+        "vehicleUseCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurableRisk",
+      "xml" : {
+        "name" : "insurableRisk2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "InsurableRiskLocation" : {
+      "type" : "object",
+      "properties" : {
+        "addressTypeText" : {
+          "type" : "string"
+        },
+        "geographicLocation" : {
+          "$ref" : "#/definitions/GeographicLocation"
+        },
+        "lastStandardizedDate" : {
+          "type" : "string"
+        },
+        "locationMatchCode" : {
+          "type" : "string"
+        },
+        "locationQualityCode" : {
+          "type" : "string"
+        },
+        "longitudeLatitudeAccuracyCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurableRiskLocation"
+    },
+    "InsurableRiskPartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string"
+        },
+        "autoClientIdentifier" : {
+          "type" : "string"
+        },
+        "clientIdentifier" : {
+          "type" : "string"
+        },
+        "excludedSwitch" : {
+          "type" : "boolean"
+        },
+        "roleNameText" : {
+          "type" : "string"
+        },
+        "secondaryRoleNameText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurableRiskPartyRole",
+      "xml" : {
+        "name" : "insurableRiskPartyRole2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "InsurableRiskPolicyAdministrationSystemIdentifier" : {
+      "type" : "object",
+      "properties" : {
+        "insurableRiskPublicIdentifier" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurableRiskPolicyAdministrationSystemIdentifier"
+    },
+    "InsurableRiskRatingAssignment" : {
+      "type" : "object",
+      "properties" : {
+        "assignmentEndDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "assignmentStartDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "party" : {
+          "$ref" : "#/definitions/Party"
+        },
+        "ratingAssignmentRoleCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurableRiskRatingAssignment"
+    },
+    "InsurableRiskStructure" : {
+      "type" : "object",
+      "properties" : {
+        "residentCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "structure" : {
+          "$ref" : "#/definitions/Structure"
+        }
+      },
+      "title" : "InsurableRiskStructure"
+    },
+    "InsurableRiskVehicle" : {
+      "type" : "object",
+      "properties" : {
+        "compensatedTransportationIndicator" : {
+          "type" : "string"
+        },
+        "driveSafeAndSaveEnrollmentSwitch" : {
+          "type" : "boolean"
+        },
+        "insuranceRatingGroupCollisionCode" : {
+          "type" : "string"
+        },
+        "insuranceRatingGroupComprehensiveCode" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "priorAgreementIndexIdentifier" : {
+          "type" : "string"
+        },
+        "transportationIncidentalOccupationDutyIndicator" : {
+          "type" : "string"
+        },
+        "transportationNetworkCompanyUsageIndicator" : {
+          "type" : "string"
+        },
+        "transportationSchoolChurchEmployeeIndicator" : {
+          "type" : "string"
+        },
+        "vehicle" : {
+          "$ref" : "#/definitions/Vehicle"
+        },
+        "vehicleEffectiveDate" : {
+          "type" : "string"
+        },
+        "vehicleTenureValidFromDate" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurableRiskVehicle"
+    },
+    "InsuranceApplication" : {
+      "type" : "object",
+      "properties" : {
+        "applicationEffectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "applicationSourceCode" : {
+          "type" : "string"
+        },
+        "automatedIssuanceCode" : {
+          "type" : "string"
+        },
+        "newBusnTransTypeCode" : {
+          "type" : "string"
+        },
+        "priorCrrrBiCovUpperLimitCode" : {
+          "type" : "string"
+        },
+        "priorCrrrCode" : {
+          "type" : "string"
+        },
+        "priorCrrrDurationMonthCount" : {
+          "type" : "string"
+        },
+        "quotedPremiumAmount" : {
+          "type" : "number"
+        }
+      },
+      "title" : "InsuranceApplication"
+    },
+    "InsuranceFiling" : {
+      "type" : "object",
+      "properties" : {
+        "filingDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "filingDescriptionText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsuranceFiling"
+    },
+    "InsurancePartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementForm" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EndorsementForm"
+          }
+        },
+        "legacyRoleCode" : {
+          "type" : "string"
+        },
+        "party" : {
+          "$ref" : "#/definitions/Party"
+        },
+        "roleEndDate" : {
+          "type" : "string"
+        },
+        "roleNameCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roleNameText" : {
+          "type" : "string"
+        },
+        "roleStartDate" : {
+          "type" : "string"
+        },
+        "secondaryRoleNameCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "secondaryRoleNameText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurancePartyRole"
+    },
+    "InsurancePolicy" : {
+      "type" : "object",
+      "properties" : {
+        "agreementIndexIdentifier" : {
+          "type" : "string"
+        },
+        "applicationNumber" : {
+          "type" : "string"
+        },
+        "bookOfBusinessIdentifier" : {
+          "type" : "string"
+        },
+        "insurancePolicyPolicyAdministrationSystemIdentifier" : {
+          "$ref" : "#/definitions/InsurancePolicyPolicyAdministrationSystemIdentifier"
+        },
+        "issuingStateName" : {
+          "type" : "string"
+        },
+        "legalPolicyNumber" : {
+          "type" : "string"
+        },
+        "marketableProduct" : {
+          "$ref" : "#/definitions/MarketableProduct"
+        },
+        "nationalAssociationInsuranceCommissionerNumber" : {
+          "type" : "string"
+        },
+        "policyDisplayNumber" : {
+          "type" : "string"
+        },
+        "policyDisplayPartyName" : {
+          "type" : "string"
+        },
+        "policyInceptionDate" : {
+          "type" : "string"
+        },
+        "policyPostalAddress" : {
+          "$ref" : "#/definitions/PolicyPostalAddress"
+        },
+        "policySourceSystemCode" : {
+          "type" : "string"
+        },
+        "policyStatusCode" : {
+          "type" : "string"
+        },
+        "policyStatusText" : {
+          "type" : "string"
+        },
+        "policyTenureValidFromDate" : {
+          "type" : "string"
+        },
+        "policyTerm" : {
+          "$ref" : "#/definitions/PolicyTerm"
+        },
+        "policyTerminatedDate" : {
+          "type" : "string"
+        },
+        "policyTransaction" : {
+          "$ref" : "#/definitions/PolicyTransaction"
+        },
+        "timeOutOfForces" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TimeOutOfForces"
+          }
+        }
+      },
+      "title" : "InsurancePolicy"
+    },
+    "InsurancePolicyPartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string"
+        },
+        "autoClientIdentifier" : {
+          "type" : "string"
+        },
+        "clientIdentifier" : {
+          "type" : "string"
+        },
+        "driverRoleVendorReportRequests" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DriverRoleVendorReportRequest"
+          }
+        },
+        "excludedDriverIndicator" : {
+          "type" : "string"
+        },
+        "financialResponsibilityRequiredReasonText" : {
+          "type" : "string"
+        },
+        "militaryFrequentVehicleAccessSwitch" : {
+          "type" : "boolean"
+        },
+        "partyPolicyholderRelationText" : {
+          "type" : "string"
+        },
+        "roleNameText" : {
+          "type" : "string"
+        },
+        "secondaryRoleNameText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurancePolicyPartyRole"
+    },
+    "InsurancePolicyPolicyAdministrationSystemIdentifier" : {
+      "type" : "object",
+      "properties" : {
+        "insurancePolicyPublicIdentifier" : {
+          "type" : "string"
+        },
+        "insurancePolicyXpathName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "InsurancePolicyPolicyAdministrationSystemIdentifier"
+    },
+    "LegacyClaimSurcharge" : {
+      "type" : "object",
+      "properties" : {
+        "claimNumber" : {
+          "type" : "string"
+        },
+        "claimSurchargeCategoryCode" : {
+          "type" : "string"
+        },
+        "exceptionTypeCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "LegacyClaimSurcharge"
+    },
+    "Location" : {
+      "type" : "object",
+      "properties" : {
+        "areaPerilDescriptionCode" : {
+          "type" : "string"
+        },
+        "cityCode" : {
+          "type" : "string"
+        },
+        "cityLimitIndicator" : {
+          "type" : "string"
+        },
+        "countyCode" : {
+          "type" : "string"
+        },
+        "earthquakeZoneCode" : {
+          "type" : "string"
+        },
+        "fireProtectionAreaIdentifier" : {
+          "type" : "string"
+        },
+        "latitudeNumber" : {
+          "type" : "number"
+        },
+        "locationMatchCode" : {
+          "type" : "string"
+        },
+        "locationNumber" : {
+          "type" : "string"
+        },
+        "locationQualityCode" : {
+          "type" : "string"
+        },
+        "longitudeLatitudeAccuracyCode" : {
+          "type" : "string"
+        },
+        "longitudeNumber" : {
+          "type" : "number"
+        },
+        "manufacturedHomeParkNumber" : {
+          "type" : "string"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "pbriConfidenceLevelCode" : {
+          "type" : "string"
+        },
+        "perilRiskIndex" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PerilRiskIndex"
+          }
+        },
+        "postalAddress" : {
+          "$ref" : "#/definitions/postalAddress"
+        },
+        "primaryLocationSwitch" : {
+          "type" : "boolean"
+        },
+        "protectionClassCode" : {
+          "type" : "string"
+        },
+        "servicingFireDepartmentDistanceCode" : {
+          "type" : "string"
+        },
+        "sfGeographicStateCode" : {
+          "type" : "string"
+        },
+        "standardIndustrialClassificationCode" : {
+          "type" : "string"
+        },
+        "territoryCode" : {
+          "type" : "string"
+        },
+        "territorySubZoneCode" : {
+          "type" : "string"
+        },
+        "territorySubZoneVersionNumber" : {
+          "type" : "string"
+        },
+        "territoryZoneVersionNumber" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Location"
+    },
+    "MarketableProduct" : {
+      "type" : "object",
+      "properties" : {
+        "businessLineName" : {
+          "type" : "string"
+        },
+        "policyFormCode" : {
+          "type" : "string"
+        },
+        "productCategoryName" : {
+          "type" : "string"
+        },
+        "productDescriptionCode" : {
+          "type" : "string"
+        },
+        "productDescriptionText" : {
+          "type" : "string"
+        },
+        "productName" : {
+          "type" : "string"
+        },
+        "productPostalStateCode" : {
+          "type" : "string"
+        },
+        "servicingPolicyAdministrationSystemProductName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "MarketableProduct"
+    },
+    "Motor" : {
+      "type" : "object",
+      "properties" : {
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "device" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/device"
+          }
+        },
+        "dieselFuelIndicator" : {
+          "type" : "string"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "engineDisplacementCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineHorsepowerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "inspection" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Inspection"
+          }
+        },
+        "irgCollisionCode" : {
+          "type" : "string"
+        },
+        "irgComprehensiveCode" : {
+          "type" : "string"
+        },
+        "lengthCount" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerDivisionCode" : {
+          "type" : "string"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "manufacturerUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "originalStatedValueAmount" : {
+          "type" : "number"
+        },
+        "physicalObjectPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhysicalObjectPartyRole"
+          }
+        },
+        "physicalObjectSerialNumber" : {
+          "type" : "string"
+        },
+        "physicalObjectSubtypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "physicalObjectTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        },
+        "vinValidationCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Motor"
+    },
+    "Name" : {
+      "type" : "object",
+      "properties" : {
+        "firstName" : {
+          "type" : "string"
+        },
+        "fullName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "lastNameFabricationCode" : {
+          "type" : "string"
+        },
+        "middleName" : {
+          "type" : "string"
+        },
+        "nameSuffix" : {
+          "type" : "string"
+        },
+        "nameTitle" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Name"
+    },
+    "Note" : {
+      "type" : "object",
+      "properties" : {
+        "autoNoteKey" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "createdByExtnlIdDbaseSrcCode" : {
+          "type" : "string"
+        },
+        "createdByPartyIdentifier" : {
+          "type" : "string"
+        },
+        "noteChangeCode" : {
+          "type" : "string"
+        },
+        "noteChangeDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "noteEntryDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "noteSequenceNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "noteText" : {
+          "type" : "string"
+        },
+        "noteTypeCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Note"
+    },
+    "OdometerReading" : {
+      "type" : "object",
+      "properties" : {
+        "odometerMileageCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "odometerReadingMonthYearDate" : {
+          "type" : "string"
+        }
+      },
+      "title" : "OdometerReading"
+    },
+    "Party" : {
+      "type" : "object",
+      "properties" : {
+        "autoClientIdentifier" : {
+          "type" : "string"
+        },
+        "birthDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "driverIdentifier" : {
+          "type" : "string"
+        },
+        "genderCode" : {
+          "type" : "string"
+        },
+        "individualIdentifier" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "maritalStatusCode" : {
+          "type" : "string"
+        },
+        "motorcycleOriginalLicenseDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "organizationTypeCode" : {
+          "type" : "string"
+        },
+        "originalLicenseDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "partyDoingBusinessAs" : {
+          "$ref" : "#/definitions/Party"
+        },
+        "partyIdSourceDBCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "partyIdentifier" : {
+          "type" : "string"
+        },
+        "partyName" : {
+          "$ref" : "#/definitions/Name"
+        },
+        "postalAddress" : {
+          "$ref" : "#/definitions/postalAddress"
+        },
+        "sfOperationCenterCode" : {
+          "type" : "string"
+        },
+        "singleNameIndicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Party"
+    },
+    "PartyName" : {
+      "type" : "object",
+      "properties" : {
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "middleName" : {
+          "type" : "string"
+        },
+        "nameIdentifier" : {
+          "type" : "string"
+        },
+        "organizationName" : {
+          "type" : "string"
+        },
+        "suffixName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PartyName"
+    },
+    "PerilRiskIndex" : {
+      "type" : "object",
+      "properties" : {
+        "pbriMapCode" : {
+          "type" : "string"
+        },
+        "pbriValueCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PerilRiskIndex"
+    },
+    "PersonalArticle" : {
+      "type" : "object",
+      "properties" : {
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "classificationCode" : {
+          "type" : "string"
+        },
+        "classificationName" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "device" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/device"
+          }
+        },
+        "dieselFuelIndicator" : {
+          "type" : "string"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "engineDisplacementCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineHorsepowerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "inspection" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Inspection"
+          }
+        },
+        "irgCollisionCode" : {
+          "type" : "string"
+        },
+        "irgComprehensiveCode" : {
+          "type" : "string"
+        },
+        "lengthCount" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerDivisionCode" : {
+          "type" : "string"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "manufacturerUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "originalStatedValueAmount" : {
+          "type" : "number"
+        },
+        "physicalObjectPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhysicalObjectPartyRole"
+          }
+        },
+        "physicalObjectSerialNumber" : {
+          "type" : "string"
+        },
+        "physicalObjectSubtypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "physicalObjectTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        },
+        "vinValidationCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PersonalArticle"
+    },
+    "PhysicalObjectPartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementForm" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EndorsementForm"
+          }
+        },
+        "legacyRoleCode" : {
+          "type" : "string"
+        },
+        "loanNumber" : {
+          "type" : "string"
+        },
+        "party" : {
+          "$ref" : "#/definitions/Party"
+        },
+        "partyNotificationMinDayCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roleEndDate" : {
+          "type" : "string"
+        },
+        "roleNameCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roleNameText" : {
+          "type" : "string"
+        },
+        "roleStartDate" : {
+          "type" : "string"
+        },
+        "secondaryRoleNameCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "secondaryRoleNameText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PhysicalObjectPartyRole"
+    },
+    "Policy" : {
+      "type" : "object",
+      "properties" : {
+        "agentOfRecord" : {
+          "$ref" : "#/definitions/Agent"
+        },
+        "agreSourceSystemCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "agreementAccessKey" : {
+          "type" : "string"
+        },
+        "agreementDisplayNumber" : {
+          "type" : "string"
+        },
+        "agreementIndexIdentifier" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "aipAssignmentNumber" : {
+          "type" : "string"
+        },
+        "autoDivisionCode" : {
+          "type" : "string"
+        },
+        "autoFleetIndicator" : {
+          "type" : "string"
+        },
+        "autoGreDbaIneligibilityInd" : {
+          "type" : "string"
+        },
+        "autoGreDelayDate" : {
+          "type" : "string"
+        },
+        "autoGreEffectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "autoGreEligibilityIndicator" : {
+          "type" : "string"
+        },
+        "autoGreNamedInsuredOverrideInd" : {
+          "type" : "string"
+        },
+        "autoGreOverrideIndicator" : {
+          "type" : "string"
+        },
+        "autoGrePolicyIndicator" : {
+          "type" : "string"
+        },
+        "autoGrePolicyNumber" : {
+          "type" : "string"
+        },
+        "autoGreRemovalReasonCode" : {
+          "type" : "string"
+        },
+        "autoGreSendLetterIndicator" : {
+          "type" : "string"
+        },
+        "autoPolicyCovPeriodIndicator" : {
+          "type" : "string"
+        },
+        "automaticReinEligIndicator" : {
+          "type" : "string"
+        },
+        "automaticReinstatementCode" : {
+          "type" : "string"
+        },
+        "billCode" : {
+          "type" : "string"
+        },
+        "billDueDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "billingAccountNumber" : {
+          "type" : "string"
+        },
+        "billingCurrentDueAmount" : {
+          "type" : "number"
+        },
+        "bondTypeCode" : {
+          "type" : "string"
+        },
+        "bpcDescriptionText" : {
+          "type" : "string"
+        },
+        "businessLineCode" : {
+          "type" : "string"
+        },
+        "cancellationReasonCode" : {
+          "type" : "string"
+        },
+        "commercialCrisisIndicator" : {
+          "type" : "string"
+        },
+        "companyCode" : {
+          "type" : "string"
+        },
+        "companyName" : {
+          "type" : "string"
+        },
+        "coverageTermLengthCode" : {
+          "type" : "string"
+        },
+        "inflationAdjustment" : {
+          "$ref" : "#/definitions/InflationAdjustment"
+        },
+        "insuranceFilings" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsuranceFiling"
+          }
+        },
+        "legacyPaymentActivityCode" : {
+          "type" : "string"
+        },
+        "legacyPaymentActivityDescription" : {
+          "type" : "string"
+        },
+        "legacyStatusCode" : {
+          "type" : "string"
+        },
+        "legacyStatusExtensionCode" : {
+          "type" : "string"
+        },
+        "marketableProductSpecId" : {
+          "type" : "string"
+        },
+        "oldestPolicyOriginationDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "partialEntryTypeCode" : {
+          "type" : "string"
+        },
+        "partyRoleOrganizationTypeCode" : {
+          "type" : "string"
+        },
+        "policyCoverageTypeCode" : {
+          "type" : "string"
+        },
+        "policyInceptionDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "policyIssueDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "policyIssueYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "policyMailingPostalAddress" : {
+          "$ref" : "#/definitions/postalAddress"
+        },
+        "policyPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurancePartyRole"
+          }
+        },
+        "policyRenewalTermDurationMoCnt" : {
+          "type" : "string"
+        },
+        "policyRenewalTypeCode" : {
+          "type" : "string"
+        },
+        "policyStatusCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "policyStatusInitiatorCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "policyStatusInitiatorText" : {
+          "type" : "string"
+        },
+        "policyStatusReasonCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "policyStatusReasonText" : {
+          "type" : "string"
+        },
+        "policyStatusText" : {
+          "type" : "string"
+        },
+        "preferredProviderAgreement" : {
+          "$ref" : "#/definitions/PreferredProviderAgreement"
+        },
+        "primaryFormLineMajorPerilCode" : {
+          "type" : "string"
+        },
+        "primaryStatClassCode" : {
+          "type" : "string"
+        },
+        "priorCancellationIndicator" : {
+          "type" : "string"
+        },
+        "producerAssignmentTypeCode" : {
+          "type" : "string"
+        },
+        "productDescriptionAbbreviationText" : {
+          "type" : "string"
+        },
+        "productDescriptionCode" : {
+          "type" : "string"
+        },
+        "productDescriptionText" : {
+          "type" : "string"
+        },
+        "ratingChangeRenewalDate" : {
+          "type" : "string"
+        },
+        "reinstatementApplicationDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "reinstatementDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "relatedPolicy" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RelatedPolicy"
+          }
+        },
+        "renewalBillingDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "renewalSuspensionIndicator" : {
+          "type" : "string"
+        },
+        "rewriteReasonCode" : {
+          "type" : "string"
+        },
+        "servicingAgent" : {
+          "$ref" : "#/definitions/Agent"
+        },
+        "specialAccountSystemNumber" : {
+          "type" : "string"
+        },
+        "stateFarmStateCode" : {
+          "type" : "string"
+        },
+        "statutoryGuaranteePeriodEndDt" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "suspensionDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "tenureStartYearNum" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "termVersion" : {
+          "$ref" : "#/definitions/TermVersion"
+        },
+        "terminationDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      },
+      "title" : "Policy"
+    },
+    "PolicyEndorsementForm" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementFormTypeCode" : {
+          "type" : "string"
+        },
+        "formDescriptionText" : {
+          "type" : "string"
+        },
+        "formNumber" : {
+          "type" : "string"
+        },
+        "revisionNumber" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PolicyEndorsementForm"
+    },
+    "PolicyGenericCoverageSet" : {
+      "type" : "object",
+      "properties" : {
+        "genericCoverageGroups" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageGroup"
+          }
+        }
+      },
+      "title" : "PolicyGenericCoverageSet"
+    },
+    "PolicyLevelPremiumAdjustment" : {
+      "type" : "object",
+      "properties" : {
+        "premiumAdjustmentAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "premiumAdjustmentTypeName" : {
+          "type" : "string"
+        },
+        "premiumAdjustmentValueDate" : {
+          "type" : "string"
+        },
+        "premiumAdjustmentValueText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PolicyLevelPremiumAdjustment"
+    },
+    "PolicyPostalAddress" : {
+      "type" : "object",
+      "properties" : {
+        "addressEffectiveDate" : {
+          "type" : "string"
+        },
+        "addressTypeText" : {
+          "type" : "string"
+        },
+        "geographicLocation" : {
+          "$ref" : "#/definitions/GeographicLocation"
+        },
+        "lastStandardizedDate" : {
+          "type" : "string"
+        },
+        "userInputAddressOverriddenSwitch" : {
+          "type" : "boolean"
+        }
+      },
+      "title" : "PolicyPostalAddress"
+    },
+    "PolicyRetrievalResponse" : {
+      "type" : "object",
+      "properties" : {
+        "insurancePolicy" : {
+          "xml" : {
+            "name" : "insurancePolicy",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/InsurancePolicy"
+        },
+        "policy" : {
+          "xml" : {
+            "name" : "policy",
+            "attribute" : false,
+            "wrapped" : false
+          },
+          "$ref" : "#/definitions/Policy"
+        }
+      },
+      "title" : "PolicyRetrievalResponse",
+      "xml" : {
+        "name" : "PolicyRetrievalResponse",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "PolicySpecificEndorsementForm" : {
+      "type" : "object",
+      "properties" : {
+        "guaranteedRenewalEndorsementPolicyIndicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PolicySpecificEndorsementForm"
+    },
+    "PolicyTerm" : {
+      "type" : "object",
+      "properties" : {
+        "businessModelExecutions" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/BusinessModelExecution"
+          }
+        },
+        "customers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Customer"
+          }
+        },
+        "fullPolicyTermEffectiveDate" : {
+          "type" : "string"
+        },
+        "fullPolicyTermExpirationDate" : {
+          "type" : "string"
+        },
+        "fullTermPolicyPremiumAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "insurableRisks" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurableRisk"
+          }
+        },
+        "insurancePolicyPartyRoles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurancePolicyPartyRole"
+          }
+        },
+        "minimumPremiumIndicator" : {
+          "type" : "string"
+        },
+        "policyEndorsementForms" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyEndorsementForm"
+          }
+        },
+        "policyGenericCoverageSet" : {
+          "$ref" : "#/definitions/PolicyGenericCoverageSet"
+        },
+        "policyLevelPremiumAdjustments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyLevelPremiumAdjustment"
+          }
+        },
+        "policySpecificEndorsementForm" : {
+          "$ref" : "#/definitions/PolicySpecificEndorsementForm"
+        },
+        "policyTermDurationText" : {
+          "type" : "string"
+        },
+        "policyTermNumber" : {
+          "type" : "string"
+        },
+        "policyTermVendorReportRequests" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyTermVendorReportRequest"
+          }
+        },
+        "stateFarmCompany" : {
+          "$ref" : "#/definitions/StateFarmCompany"
+        },
+        "termEffectiveDate" : {
+          "type" : "string"
+        },
+        "termExpirationDate" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PolicyTerm"
+    },
+    "PolicyTermVendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "addressDiscrepancyUnresolvedSwitch" : {
+          "type" : "boolean"
+        },
+        "policyTermReportOrderStatusText" : {
+          "type" : "string"
+        },
+        "vendorReportRequest" : {
+          "$ref" : "#/definitions/VendorReportRequest"
+        }
+      },
+      "title" : "PolicyTermVendorReportRequest"
+    },
+    "PolicyTransaction" : {
+      "type" : "object",
+      "properties" : {
+        "applicationEffectiveDate" : {
+          "type" : "string"
+        },
+        "cancellationNotificationAcknowledgementDate" : {
+          "type" : "string"
+        },
+        "initialCancellationNotificationDate" : {
+          "type" : "string"
+        },
+        "mostRecentCancellationNotificationDate" : {
+          "type" : "string"
+        },
+        "policyAdministrationSystemJobNumber" : {
+          "type" : "string"
+        },
+        "policyTransactionReasons" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyTransactionReason"
+          }
+        },
+        "policyTransactionRequestSourceName" : {
+          "type" : "string"
+        },
+        "premiumEvaluationOutcomeText" : {
+          "type" : "string"
+        },
+        "processAccountingDate" : {
+          "type" : "string"
+        },
+        "rejectionReasonText" : {
+          "type" : "string"
+        },
+        "renewalResultText" : {
+          "type" : "string"
+        },
+        "requestIdentifier" : {
+          "type" : "string"
+        },
+        "rescindCancellationNotificationDate" : {
+          "type" : "string"
+        },
+        "transactionEffectiveTimestamp" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "transactionSubtypeText" : {
+          "type" : "string"
+        },
+        "transactionTypeText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PolicyTransaction"
+    },
+    "PolicyTransactionReason" : {
+      "type" : "object",
+      "properties" : {
+        "policyTransactionReasonName" : {
+          "type" : "string"
+        },
+        "primaryReasonSwitch" : {
+          "type" : "boolean"
+        }
+      },
+      "title" : "PolicyTransactionReason"
+    },
+    "PostalAddress" : {
+      "type" : "object",
+      "properties" : {
+        "cityName" : {
+          "type" : "string"
+        },
+        "countryName" : {
+          "type" : "string"
+        },
+        "fullStreetAddressText" : {
+          "type" : "string"
+        },
+        "postalAddressIdentifier" : {
+          "type" : "string"
+        },
+        "postalStateCode" : {
+          "type" : "string"
+        },
+        "postalZipCode" : {
+          "type" : "string"
+        },
+        "standardizationIndicator" : {
+          "type" : "string"
+        },
+        "streetAddressLine1Text" : {
+          "type" : "string"
+        },
+        "streetAddressLine2Text" : {
+          "type" : "string"
+        },
+        "streetAddressLine3Text" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PostalAddress",
+      "xml" : {
+        "name" : "postalAddress2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "PreferredProviderAgreement" : {
+      "type" : "object",
+      "properties" : {
+        "groupCode" : {
+          "type" : "string"
+        },
+        "groupName" : {
+          "type" : "string"
+        },
+        "statusCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PreferredProviderAgreement"
+    },
+    "PricingRuleSetAdjustment" : {
+      "type" : "object",
+      "properties" : {
+        "pricingRuleSetAdjustmentAmount" : {
+          "type" : "number"
+        },
+        "pricingRuleSetAdjustmentPct" : {
+          "type" : "number"
+        },
+        "pricingRuleSetCode" : {
+          "type" : "string"
+        },
+        "pricingRuleSetDisplayName" : {
+          "type" : "string"
+        },
+        "pricingRuleSetTypeCode" : {
+          "type" : "string"
+        },
+        "pricingRuleSetUniqueName" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PricingRuleSetAdjustment"
+    },
+    "PricingRuleSetExecution" : {
+      "type" : "object",
+      "properties" : {
+        "autoClassCode" : {
+          "type" : "string"
+        },
+        "autoClassRplcByGrnlDataCode" : {
+          "type" : "string"
+        },
+        "autoDrcClassOverrideInd" : {
+          "type" : "string"
+        },
+        "autoDrcTerritoryOverrideInd" : {
+          "type" : "string"
+        },
+        "financialRsbtySurchargeCode" : {
+          "type" : "string"
+        },
+        "pricingAdjustment" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PricingRuleSetAdjustment"
+          }
+        },
+        "totalDiscountPremiumAmount" : {
+          "type" : "number"
+        }
+      },
+      "title" : "PricingRuleSetExecution"
+    },
+    "PriorDamage" : {
+      "type" : "object",
+      "properties" : {
+        "priorDamageCode" : {
+          "type" : "string"
+        },
+        "priorDamageDescriptionText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "PriorDamage"
+    },
+    "RelatedPolicy" : {
+      "type" : "object",
+      "properties" : {
+        "agreementSourceSystemCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "autoChangeCode" : {
+          "type" : "string"
+        },
+        "natureCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "relatedAgreementAccessKey" : {
+          "type" : "string"
+        },
+        "relatedAgreementDisplayNumber" : {
+          "type" : "string"
+        },
+        "relatedAgreementIndexId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "relatedProductDescriptionCode" : {
+          "type" : "string"
+        },
+        "relatedProductDescriptionText" : {
+          "type" : "string"
+        },
+        "relationshipEffectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "transferCarNumber" : {
+          "type" : "string"
+        }
+      },
+      "title" : "RelatedPolicy"
+    },
+    "RiskGenericCoverageSet" : {
+      "type" : "object",
+      "properties" : {
+        "genericCoverageGroups" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageGroup"
+          }
+        },
+        "policyEndorsementForms" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyEndorsementForm"
+          }
+        }
+      },
+      "title" : "RiskGenericCoverageSet"
+    },
+    "RiskLevelPremiumAdjustment" : {
+      "type" : "object",
+      "properties" : {
+        "premiumAdjustmentAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "premiumAdjustmentTypeName" : {
+          "type" : "string"
+        },
+        "premiumAdjustmentValueDate" : {
+          "type" : "string"
+        },
+        "premiumAdjustmentValueText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "RiskLevelPremiumAdjustment"
+    },
+    "Score" : {
+      "type" : "object",
+      "properties" : {
+        "scoreModelTypeText" : {
+          "type" : "string"
+        },
+        "scoreModelVersionText" : {
+          "type" : "string"
+        },
+        "scoreReasonCode" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "scoreValueText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Score"
+    },
+    "StateFarmCompany" : {
+      "type" : "object",
+      "properties" : {
+        "stateFarmAlphaCompanyCode" : {
+          "type" : "string"
+        },
+        "stateFarmCompanyName" : {
+          "type" : "string"
+        },
+        "stateFarmNumericCompanyCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "StateFarmCompany"
+    },
+    "Structure" : {
+      "type" : "object",
+      "properties" : {
+        "devices" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Device"
+          }
+        }
+      },
+      "title" : "Structure",
+      "xml" : {
+        "name" : "structure2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "TermVersion" : {
+      "type" : "object",
+      "properties" : {
+        "autoFleetCarCount" : {
+          "type" : "string"
+        },
+        "autoLegacyStatusCode" : {
+          "type" : "string"
+        },
+        "fullTermEndDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "fullTermStartDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "insurableRisk" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/insurableRisk"
+          }
+        },
+        "lossRatioPercent" : {
+          "type" : "number"
+        },
+        "policyAdministrationSystemJobNumber" : {
+          "type" : "string"
+        },
+        "policyChangeCode" : {
+          "type" : "string"
+        },
+        "policyCoverageSet" : {
+          "$ref" : "#/definitions/CoverageSet"
+        },
+        "policyPricingRuleSet" : {
+          "$ref" : "#/definitions/PricingRuleSetExecution"
+        },
+        "rateSetVersionNumber" : {
+          "type" : "string"
+        },
+        "termVersionEndDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "termVersionIdentifier" : {
+          "type" : "string"
+        },
+        "termVersionStartDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "termVersionStatusCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "termVersionStatusInitiatorCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "termVersionStatusInitiatorText" : {
+          "type" : "string"
+        },
+        "termVersionStatusReasonCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "termVersionStatusReasonText" : {
+          "type" : "string"
+        },
+        "termVersionStatusText" : {
+          "type" : "string"
+        },
+        "totalPolicyPremiumAmount" : {
+          "type" : "number"
+        }
+      },
+      "title" : "TermVersion"
+    },
+    "ThirdParty" : {
+      "type" : "object",
+      "properties" : {
+        "thirdPartyIdentifier" : {
+          "type" : "string"
+        }
+      },
+      "title" : "ThirdParty"
+    },
+    "TimeOutOfForces" : {
+      "type" : "object",
+      "properties" : {
+        "timeOutOfForceCancellationReasonText" : {
+          "type" : "string"
+        },
+        "timeOutOfForceCancellationSourceName" : {
+          "type" : "string"
+        },
+        "timeOutOfForceEndDate" : {
+          "type" : "string"
+        },
+        "timeOutOfForceLegacyStatusCode" : {
+          "type" : "string"
+        },
+        "timeOutOfForceStartDate" : {
+          "type" : "string"
+        }
+      },
+      "title" : "TimeOutOfForces"
+    },
+    "UnderlyingExposure" : {
+      "type" : "object",
+      "properties" : {
+        "automobileCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "driverCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "farmPartnershipCorporationCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "farmVehicleCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "offRoadVehicleCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "officeOccupancyIndicator" : {
+          "type" : "string"
+        },
+        "rentalCoverageExposureCode" : {
+          "type" : "string"
+        },
+        "rentalPropertyUnitCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "underageDriverCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      },
+      "title" : "UnderlyingExposure"
+    },
+    "UnderwritingRuleSet" : {
+      "type" : "object",
+      "properties" : {
+        "ruleSetCode" : {
+          "type" : "string"
+        },
+        "ruleSetDisplayName" : {
+          "type" : "string"
+        },
+        "ruleSetIdentifier" : {
+          "type" : "string"
+        },
+        "ruleSetUniqueName" : {
+          "type" : "string"
+        },
+        "ruleSetVersionNumber" : {
+          "type" : "string"
+        }
+      },
+      "title" : "UnderwritingRuleSet"
+    },
+    "Vehicle" : {
+      "type" : "object",
+      "properties" : {
+        "additionalEquipments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AdditionalEquipment"
+          }
+        },
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "customizedIndicator" : {
+          "type" : "string"
+        },
+        "kitCarSwitch" : {
+          "type" : "boolean"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufactureUnavailableReasonCode" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerSuggestedRetailBasePriceAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelSpecificationIdentifier" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "string"
+        },
+        "newPurchaseAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "physicalObjectIdentifier" : {
+          "type" : "string"
+        },
+        "purchaseDate" : {
+          "type" : "string"
+        },
+        "statedValueAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "totalManufacturerSuggestedRetailPriceAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "vehicleCustomizationAmount" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "vehicleIdentificationNumber" : {
+          "type" : "string"
+        },
+        "vehiclePartyRoles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/VehiclePartyRole"
+          }
+        },
+        "vehicleVendorReportRequests" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/VehicleVendorReportRequest"
+          }
+        }
+      },
+      "title" : "Vehicle",
+      "xml" : {
+        "name" : "vehicle2",
+        "attribute" : false,
+        "wrapped" : false
+      }
+    },
+    "VehiclePartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string"
+        },
+        "clientIdentifier" : {
+          "type" : "string"
+        },
+        "roleNameText" : {
+          "type" : "string"
+        },
+        "thirdParty" : {
+          "$ref" : "#/definitions/ThirdParty"
+        }
+      },
+      "title" : "VehiclePartyRole"
+    },
+    "VehicleUsage" : {
+      "type" : "object",
+      "properties" : {
+        "businessUseIndicator" : {
+          "type" : "string"
+        },
+        "dailyOneWayCommuteDstncCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "estAnnualDistanceDrivenCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "estimatedWeeklyDaysDrivenCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "highTheftCode" : {
+          "type" : "string"
+        },
+        "insuredTrailerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "limitedCommuteIndicator" : {
+          "type" : "string"
+        },
+        "vehicleAnnlDstncDrivenSrcCode" : {
+          "type" : "string"
+        },
+        "vehicleOprtnRadiusDstncCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "weeklyCommuteDistanceCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      },
+      "title" : "VehicleUsage"
+    },
+    "VehicleVendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "orderStatusText" : {
+          "type" : "string"
+        },
+        "vendorReportRequest" : {
+          "$ref" : "#/definitions/VendorReportRequest"
+        }
+      },
+      "title" : "VehicleVendorReportRequest"
+    },
+    "VendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "reportRequestIdentifier" : {
+          "type" : "string"
+        },
+        "reportRequestReasonText" : {
+          "type" : "string"
+        },
+        "reportRequestTypeName" : {
+          "type" : "string"
+        },
+        "requestReceivedTimestamp" : {
+          "type" : "string",
+          "format" : "date-time"
+        }
+      },
+      "title" : "VendorReportRequest"
+    },
+    "Watercraft" : {
+      "type" : "object",
+      "properties" : {
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "classificationCode" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "device" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/device"
+          }
+        },
+        "dieselFuelIndicator" : {
+          "type" : "string"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "engineDisplacementCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineHorsepowerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "hullConfigurationCode" : {
+          "type" : "string"
+        },
+        "hullRatingCode" : {
+          "type" : "string"
+        },
+        "inspection" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Inspection"
+          }
+        },
+        "irgCollisionCode" : {
+          "type" : "string"
+        },
+        "irgComprehensiveCode" : {
+          "type" : "string"
+        },
+        "lengthCount" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerDivisionCode" : {
+          "type" : "string"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "manufacturerUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "motor" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Motor"
+          }
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "originalStatedValueAmount" : {
+          "type" : "number"
+        },
+        "physicalObjectPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhysicalObjectPartyRole"
+          }
+        },
+        "physicalObjectSerialNumber" : {
+          "type" : "string"
+        },
+        "physicalObjectSubtypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "physicalObjectTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        },
+        "trailer" : {
+          "$ref" : "#/definitions/vehicle"
+        },
+        "vinValidationCode" : {
+          "type" : "string"
+        },
+        "watercraftTypeCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "Watercraft"
+    },
+    "additionalEquipment" : {
+      "type" : "object",
+      "properties" : {
+        "equipmentCostAmount" : {
+          "type" : "number"
+        },
+        "equipmentDescriptionText" : {
+          "type" : "string"
+        },
+        "equipmentItemNumber" : {
+          "type" : "string"
+        },
+        "equipmentItemTypeText" : {
+          "type" : "string"
+        },
+        "equipmentMakeName" : {
+          "type" : "string"
+        },
+        "equipmentManufactureYear" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      },
+      "title" : "additionalEquipment"
+    },
+    "device" : {
+      "type" : "object",
+      "properties" : {
+        "categoryName" : {
+          "type" : "string"
+        },
+        "descriptionCode" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "installDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "mfgSugstRetailPriceAmount" : {
+          "type" : "number"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "permanentlyInstalledIndicator" : {
+          "type" : "string"
+        },
+        "serialNumber" : {
+          "type" : "string"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        }
+      },
+      "title" : "device"
+    },
+    "insurableRisk" : {
+      "type" : "object",
+      "properties" : {
+        "autoBasicPolicyCode" : {
+          "type" : "string"
+        },
+        "autoCvPendIndicator" : {
+          "type" : "string"
+        },
+        "autoFleetCode" : {
+          "type" : "string"
+        },
+        "autoFredIdentifier" : {
+          "type" : "string"
+        },
+        "autoFredSequenceNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "autoInsurableRiskLocation" : {
+          "$ref" : "#/definitions/Location"
+        },
+        "autoLayupCode" : {
+          "type" : "string"
+        },
+        "autoPolicyKindCode" : {
+          "type" : "string"
+        },
+        "autoPolicyOrigEffectiveDate" : {
+          "type" : "string"
+        },
+        "autoPreferredCompanyOfferInd" : {
+          "type" : "string"
+        },
+        "autoStateFarmStateCode" : {
+          "type" : "string"
+        },
+        "autoUnissuedRiskEffectiveDate" : {
+          "type" : "string"
+        },
+        "autoVehicleInceptionDate" : {
+          "type" : "string"
+        },
+        "autoYouthMaleDriverIndicator" : {
+          "type" : "string"
+        },
+        "building" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/structure"
+          }
+        },
+        "businessEstabYearNumber" : {
+          "type" : "string"
+        },
+        "businessOwnershipTypeCode" : {
+          "type" : "string"
+        },
+        "businessOwnershipTypeName" : {
+          "type" : "string"
+        },
+        "cargo" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Cargo"
+          }
+        },
+        "commercialRiskDescriptionCode" : {
+          "type" : "string"
+        },
+        "coverageSet" : {
+          "$ref" : "#/definitions/CoverageSet"
+        },
+        "employeeCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "excludedDriverCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "highwayLossDataSentIndicator" : {
+          "type" : "string"
+        },
+        "homeOwnershipStatusCode" : {
+          "type" : "string"
+        },
+        "insurableRiskNote" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Note"
+          }
+        },
+        "insuranceApplication" : {
+          "$ref" : "#/definitions/InsuranceApplication"
+        },
+        "jobSiteCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "legacyClaimSurcharge" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/LegacyClaimSurcharge"
+          }
+        },
+        "legacyRatingAssignment" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurableRiskRatingAssignment"
+          }
+        },
+        "manufacturedHome" : {
+          "$ref" : "#/definitions/structure"
+        },
+        "manufacturedHomeRatingClassCode" : {
+          "type" : "string"
+        },
+        "marketableProductSpecId" : {
+          "type" : "string"
+        },
+        "nonvoluntaryCreditIndicator" : {
+          "type" : "string"
+        },
+        "oneStarReasonCode" : {
+          "type" : "string"
+        },
+        "personalArticle" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PersonalArticle"
+          }
+        },
+        "physicalObjectIdentifier" : {
+          "type" : "string"
+        },
+        "physicalObjectNumber" : {
+          "type" : "string"
+        },
+        "pricingRuleSet" : {
+          "$ref" : "#/definitions/PricingRuleSetExecution"
+        },
+        "priorTermCoverageSet" : {
+          "$ref" : "#/definitions/CoverageSet"
+        },
+        "productModelRevisionLabel" : {
+          "type" : "string"
+        },
+        "productOrderIdentifier" : {
+          "type" : "string"
+        },
+        "rateOverrideCode" : {
+          "type" : "string"
+        },
+        "ratePlanCode" : {
+          "type" : "string"
+        },
+        "ratingScore" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Score"
+          }
+        },
+        "replacementCostIndicator" : {
+          "type" : "string"
+        },
+        "residentRelativesCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "riskBillingCurrentDueAmount" : {
+          "type" : "number"
+        },
+        "riskCategoryCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "riskCategoryText" : {
+          "type" : "string"
+        },
+        "riskChangeCode" : {
+          "type" : "string"
+        },
+        "riskIdentifier" : {
+          "type" : "string"
+        },
+        "riskInceptionDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "riskLocation" : {
+          "$ref" : "#/definitions/Location"
+        },
+        "riskManagementCode" : {
+          "type" : "string"
+        },
+        "riskMarketCode" : {
+          "type" : "string"
+        },
+        "riskPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/insurableRiskPartyRole"
+          }
+        },
+        "riskPrimaryUseCode" : {
+          "type" : "string"
+        },
+        "riskRatingRuleCode" : {
+          "type" : "string"
+        },
+        "riskReinstatementIndicator" : {
+          "type" : "string"
+        },
+        "riskStatusChangeInitiatorCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "riskStatusChangeInitiatorText" : {
+          "type" : "string"
+        },
+        "riskStatusChangeReasonCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "riskStatusChangeReasonText" : {
+          "type" : "string"
+        },
+        "riskStatusCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "riskStatusEffectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "riskStatusText" : {
+          "type" : "string"
+        },
+        "riskTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "riskTypeText" : {
+          "type" : "string"
+        },
+        "riskUnderwritingFlagCode" : {
+          "type" : "string"
+        },
+        "riskUsageTypeCode" : {
+          "type" : "string"
+        },
+        "secondaryStructure" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/structure"
+          }
+        },
+        "telematicCommIdentifier" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "totalRiskPremiumAmount" : {
+          "type" : "number"
+        },
+        "twoStarReasonCode" : {
+          "type" : "string"
+        },
+        "underlyingExposure" : {
+          "$ref" : "#/definitions/UnderlyingExposure"
+        },
+        "underwritingRuleSet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/UnderwritingRuleSet"
+          }
+        },
+        "underwritingScore" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Score"
+          }
+        },
+        "vehicle" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/vehicle"
+          }
+        },
+        "watercraft" : {
+          "$ref" : "#/definitions/Watercraft"
+        },
+        "withdrawnFromUseIndicator" : {
+          "type" : "string"
+        },
+        "yearsInForceCode" : {
+          "type" : "string"
+        },
+        "youthfulOperatorIndicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "insurableRisk"
+    },
+    "insurableRiskPartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementForm" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EndorsementForm"
+          }
+        },
+        "legacyRoleCode" : {
+          "type" : "string"
+        },
+        "loanNumber" : {
+          "type" : "string"
+        },
+        "party" : {
+          "$ref" : "#/definitions/Party"
+        },
+        "partyNotificationMinDayCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roleEndDate" : {
+          "type" : "string"
+        },
+        "roleExclusionCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roleNameCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roleNameText" : {
+          "type" : "string"
+        },
+        "roleStartDate" : {
+          "type" : "string"
+        },
+        "roleTerminationReasonCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "secondaryRoleNameCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "secondaryRoleNameText" : {
+          "type" : "string"
+        }
+      },
+      "title" : "insurableRiskPartyRole"
+    },
+    "postalAddress" : {
+      "type" : "object",
+      "properties" : {
+        "addressTypeCode" : {
+          "type" : "string"
+        },
+        "apartmentNumber" : {
+          "type" : "string"
+        },
+        "cityName" : {
+          "type" : "string"
+        },
+        "countryNameText" : {
+          "type" : "string"
+        },
+        "fullStreetAddressText" : {
+          "type" : "string"
+        },
+        "houseNumber" : {
+          "type" : "string"
+        },
+        "legacyPostalAddressBlockText" : {
+          "type" : "string"
+        },
+        "policyMailingPostalBarCode" : {
+          "type" : "string"
+        },
+        "postOfficeBoxNumber" : {
+          "type" : "string"
+        },
+        "postalAddressIdentifier" : {
+          "type" : "string"
+        },
+        "postalStateCode" : {
+          "type" : "string"
+        },
+        "postalZipCode" : {
+          "type" : "string"
+        },
+        "ruralRouteNumber" : {
+          "type" : "string"
+        },
+        "standardizationIndicator" : {
+          "type" : "string"
+        },
+        "streetAddressLine1Text" : {
+          "type" : "string"
+        },
+        "streetAddressLine2Text" : {
+          "type" : "string"
+        },
+        "streetAddressLine3Text" : {
+          "type" : "string"
+        },
+        "streetName" : {
+          "type" : "string"
+        },
+        "streetNamePostDirectionCode" : {
+          "type" : "string"
+        },
+        "streetNamePreDirectionCode" : {
+          "type" : "string"
+        },
+        "streetSuffixCode" : {
+          "type" : "string"
+        },
+        "tempAddressActiveIndicator" : {
+          "type" : "string"
+        },
+        "unitDesignatorCode" : {
+          "type" : "string"
+        }
+      },
+      "title" : "postalAddress"
+    },
+    "structure" : {
+      "type" : "object",
+      "properties" : {
+        "approvedWallFoundationConnectionIndicator" : {
+          "type" : "string"
+        },
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "buildingCodeComplianceCode" : {
+          "type" : "string"
+        },
+        "buildingCodeComplianceDesignationCode" : {
+          "type" : "string"
+        },
+        "builtYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "constructionTypeCode" : {
+          "type" : "string"
+        },
+        "crippleStudIndicator" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "device" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/device"
+          }
+        },
+        "dieselFuelIndicator" : {
+          "type" : "string"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "electricalSystemHistoryCode" : {
+          "type" : "string"
+        },
+        "enclosureClassificationCode" : {
+          "type" : "string"
+        },
+        "engineDisplacementCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineHorsepowerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "exposureBasisCode" : {
+          "type" : "string"
+        },
+        "exteriorWallFrameCode" : {
+          "type" : "string"
+        },
+        "fireDivisionCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "foundationRestraintCode" : {
+          "type" : "string"
+        },
+        "heatingCoolingSystemHistoryCode" : {
+          "type" : "string"
+        },
+        "hurricaneConstructionCode" : {
+          "type" : "string"
+        },
+        "impactResistantRoofClassCode" : {
+          "type" : "string"
+        },
+        "impactResistantRoofInstallMonthYearDate" : {
+          "type" : "string"
+        },
+        "inspection" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Inspection"
+          }
+        },
+        "insuranceToValueCode" : {
+          "type" : "string"
+        },
+        "insuranceToValuePercent" : {
+          "type" : "number"
+        },
+        "insuredOccupancyCode" : {
+          "type" : "string"
+        },
+        "interiorUnitCount" : {
+          "type" : "string"
+        },
+        "irgCollisionCode" : {
+          "type" : "string"
+        },
+        "irgComprehensiveCode" : {
+          "type" : "string"
+        },
+        "leadAbatementIndicator" : {
+          "type" : "string"
+        },
+        "lengthCount" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerDivisionCode" : {
+          "type" : "string"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "manufacturerUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "occupancyCode" : {
+          "type" : "string"
+        },
+        "originalStatedValueAmount" : {
+          "type" : "number"
+        },
+        "physicalObjectPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhysicalObjectPartyRole"
+          }
+        },
+        "physicalObjectSerialNumber" : {
+          "type" : "string"
+        },
+        "physicalObjectSubtypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "physicalObjectTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "plumbingHistoryCode" : {
+          "type" : "string"
+        },
+        "plumbingUpgradeYearNumber" : {
+          "type" : "string"
+        },
+        "primaryRoofDeckMaterialCode" : {
+          "type" : "string"
+        },
+        "remodelYearNumber" : {
+          "type" : "string"
+        },
+        "rentalTimeCategoryCode" : {
+          "type" : "string"
+        },
+        "replacementCostEstimateAmount" : {
+          "type" : "string"
+        },
+        "residenceOwnerOccupiedWeekCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "residenceRenterOccupiedWeekCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "residenceUnoccupiedWeekCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roofClassificationCode" : {
+          "type" : "string"
+        },
+        "roofDeckAttachmentCode" : {
+          "type" : "string"
+        },
+        "roofHistoryCode" : {
+          "type" : "string"
+        },
+        "roofInstallationYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "roofMaterialCode" : {
+          "type" : "string"
+        },
+        "roofMembraneSystemComplianceIndicator" : {
+          "type" : "string"
+        },
+        "roofShapeCode" : {
+          "type" : "string"
+        },
+        "roofTieDownSystemCode" : {
+          "type" : "string"
+        },
+        "roofWallConnectionTypeCode" : {
+          "type" : "string"
+        },
+        "secondaryRoofWaterIntrusionSystemIndicator" : {
+          "type" : "string"
+        },
+        "secondaryStructureTypeCode" : {
+          "type" : "string"
+        },
+        "secondaryStructureTypeName" : {
+          "type" : "string"
+        },
+        "securedWaterHeaterIndicator" : {
+          "type" : "string"
+        },
+        "sprinklerSystemCode" : {
+          "type" : "string"
+        },
+        "sprinklerSystemIndicator" : {
+          "type" : "string"
+        },
+        "squareFootageCount" : {
+          "type" : "number"
+        },
+        "statClassCode" : {
+          "type" : "string"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        },
+        "storyCode" : {
+          "type" : "string"
+        },
+        "structureNumber" : {
+          "type" : "string"
+        },
+        "totalFinishedSquareFootageCount" : {
+          "type" : "string"
+        },
+        "totalWoodCoalStoveCount" : {
+          "type" : "string"
+        },
+        "underwritingRuleSet" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/UnderwritingRuleSet"
+          }
+        },
+        "unitCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "vinValidationCode" : {
+          "type" : "string"
+        },
+        "windDebrisProtectionCode" : {
+          "type" : "string"
+        },
+        "windMitigationRatedShingleIndicator" : {
+          "type" : "string"
+        },
+        "windstormLossReductionSystemCode" : {
+          "type" : "string"
+        },
+        "woodCoalStoveIndicator" : {
+          "type" : "string"
+        }
+      },
+      "title" : "structure"
+    },
+    "vehicle" : {
+      "type" : "object",
+      "properties" : {
+        "acquisitionDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "additionalEquipments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/additionalEquipment"
+          }
+        },
+        "addlEquipMsrpAmount" : {
+          "type" : "number"
+        },
+        "antiTheftDeviceCode" : {
+          "type" : "string"
+        },
+        "antilockBrakeIndicator" : {
+          "type" : "string"
+        },
+        "antiqueIndicator" : {
+          "type" : "string"
+        },
+        "axleCode" : {
+          "type" : "string"
+        },
+        "baseMfgSugstRetailPriceAmount" : {
+          "type" : "number"
+        },
+        "bodyStyleDescriptionText" : {
+          "type" : "string"
+        },
+        "bodyTypeCode" : {
+          "type" : "string"
+        },
+        "classicIndicator" : {
+          "type" : "string"
+        },
+        "descriptionText" : {
+          "type" : "string"
+        },
+        "device" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/device"
+          }
+        },
+        "dieselFuelIndicator" : {
+          "type" : "string"
+        },
+        "driveSafeAndSaveEnrollmentSwitch" : {
+          "type" : "boolean"
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "engineCylinderCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineDisplacementCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "engineHorsepowerCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "grossWeightNumber" : {
+          "type" : "string"
+        },
+        "inspection" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Inspection"
+          }
+        },
+        "irgCollisionCode" : {
+          "type" : "string"
+        },
+        "irgComprehensiveCode" : {
+          "type" : "string"
+        },
+        "lengthCount" : {
+          "type" : "string"
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string"
+        },
+        "makeName" : {
+          "type" : "string"
+        },
+        "manufacturerCode" : {
+          "type" : "string"
+        },
+        "manufacturerDivisionCode" : {
+          "type" : "string"
+        },
+        "manufacturerName" : {
+          "type" : "string"
+        },
+        "manufacturerUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelName" : {
+          "type" : "string"
+        },
+        "modelSpecIdUnvalReasonCode" : {
+          "type" : "string"
+        },
+        "modelSpecificationIdentifier" : {
+          "type" : "string"
+        },
+        "modelYearNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "nodeID" : {
+          "type" : "string"
+        },
+        "odometerReading" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/OdometerReading"
+          }
+        },
+        "originalStatedValueAmount" : {
+          "type" : "number"
+        },
+        "physicalObjectPartyRole" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PhysicalObjectPartyRole"
+          }
+        },
+        "physicalObjectSerialNumber" : {
+          "type" : "string"
+        },
+        "physicalObjectSubtypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "physicalObjectTypeCode" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "priorDamage" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PriorDamage"
+          }
+        },
+        "runningLightIndicator" : {
+          "type" : "string"
+        },
+        "seatingCapacityCount" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "statedValueAmount" : {
+          "type" : "number"
+        },
+        "totalMfgSugstRetailPriceAmount" : {
+          "type" : "number"
+        },
+        "valueAmount" : {
+          "type" : "number"
+        },
+        "valueTypeCode" : {
+          "type" : "string"
+        },
+        "vehicleSafetyDiscountCode" : {
+          "type" : "string"
+        },
+        "vehicleUsage" : {
+          "$ref" : "#/definitions/VehicleUsage"
+        },
+        "vinValidationCode" : {
+          "type" : "string"
+        },
+        "windowEtchingCodes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "title" : "vehicle"
+    }
+  }
+}

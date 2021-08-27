@@ -1,0 +1,2217 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "RESTful CPI webservices",
+    "title" : "Personal Lines CPI REST",
+    "contact" : {
+      "name" : "PL SNL",
+      "url" : "https://sfgitlab.opr.statefarm.org/PLM/PCCustomerPortfolioInquiry",
+      "email" : "DL-ET-PL-SNL-CPM.DLNVZW@internal.statefarm.com"
+    }
+  },
+  "host" : "plagreement-env1.cfapps-71a.opr.test.statefarm.org",
+  "basePath" : "/PCCustomerPortfolioInquiry",
+  "tags" : [
+    {
+      "name" : "customer-portfolio-controller2",
+      "description" : "the customerportfolios API"
+    }
+  ],
+  "paths" : {
+    "/customerportfolios/custom_views" : {
+      "post" : {
+        "tags" : [
+          "customerportfolios"
+        ],
+        "summary" : "Provides a customizable view of a customer's portfolio",
+        "operationId" : "customerportfoliosCustomViewsPost",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "in" : "body",
+            "name" : "customizedPortfolioRequest",
+            "description" : "customer(s) related to the portfolio to retrieve",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CustomizedPortfolioRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "204" : {
+            "description" : "No content",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Customer Portfolio not found"
+          }
+        },
+        "security" : [
+          {
+            "basicAuth" : []
+          }
+        ],
+        "deprecated" : false
+      }
+    },
+    "/customerportfolios/multiline_views" : {
+      "post" : {
+        "tags" : [
+          "customerportfolios"
+        ],
+        "summary" : "Provides the multiline view of the customer's portfolio",
+        "operationId" : "customerportfoliosMultilineViewsPost",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "in" : "body",
+            "name" : "customerPortfolioRequest",
+            "description" : "customer(s) related to the portfolio to retrieve",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "204" : {
+            "description" : "No content",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Customer Portfolio not found"
+          }
+        },
+        "security" : [
+          {
+            "basicAuth" : []
+          }
+        ],
+        "deprecated" : false
+      }
+    },
+    "/customerportfolios/rating_views" : {
+      "post" : {
+        "tags" : [
+          "customerportfolios"
+        ],
+        "summary" : "Provides the rating view of the customer's portfolio",
+        "operationId" : "customerportfoliosRatingViewsPost",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "in" : "body",
+            "name" : "customerPortfolioRequest",
+            "description" : "customer(s) related to the portfolio to retrieve",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "204" : {
+            "description" : "No content",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Customer Portfolio not found"
+          }
+        },
+        "security" : [
+          {
+            "basicAuth" : []
+          }
+        ],
+        "deprecated" : false
+      }
+    },
+    "/customerportfolios/residential_views" : {
+      "post" : {
+        "tags" : [
+          "customerportfolios"
+        ],
+        "summary" : "Provides the rating view of the customer's portfolio",
+        "operationId" : "customerportfoliosResidentialViewsPost",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "in" : "body",
+            "name" : "customerPortfolioRequest",
+            "description" : "customer(s) related to the portfolio to retrieve",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "Successful",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "204" : {
+            "description" : "No content",
+            "schema" : {
+              "$ref" : "#/definitions/CustomerPortfolioResponse"
+            }
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Customer Portfolio not found"
+          }
+        },
+        "security" : [
+          {
+            "basicAuth" : []
+          }
+        ],
+        "deprecated" : false
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "basicAuth" : {
+      "type" : "basic"
+    }
+  },
+  "definitions" : {
+    "AdditionalEquipment" : {
+      "type" : "object",
+      "properties" : {
+        "equipmentItemTypeText" : {
+          "type" : "string",
+          "description" : "categorization of additional equipment."
+        },
+        "equipmentMakeName" : {
+          "type" : "string",
+          "description" : "A label that identifies, within a manufacturer DIVISION, a given line of vehicles, as evidenced by a style or manner identified by the manufacturer's name or registered trademark. The additional equipment was made for this type of make"
+        },
+        "equipmentManufactureYear" : {
+          "type" : "string",
+          "description" : "year equipment was manufactured"
+        },
+        "equipmentManufacturerSuggestedRetailPriceAmount" : {
+          "type" : "number",
+          "description" : "the price the manufacturer suggests for the item."
+        },
+        "equipmentSerialNumber" : {
+          "type" : "string",
+          "description" : "A number that uniquely identifies a manufactured physical object."
+        }
+      },
+      "title" : "AdditionalEquipment"
+    },
+    "AutoInsuranceCarrier" : {
+      "type" : "object",
+      "properties" : {
+        "priorCarrierBodilyInjuryMaximumAmountCode" : {
+          "type" : "string",
+          "description" : "The maximum per occurrence limit amount for bodily injury coverage on the policy with the prior carrier."
+        },
+        "priorCarrierCode" : {
+          "type" : "string",
+          "description" : "Prior Carrier Code (ASE) (VEHICLE PRIOR CARRIER CODE) - THE AM BEST CODE FOR THE PRIOR CARRIER OF LIABILITY FOR THE VEHICLE."
+        },
+        "priorCarrierName" : {
+          "type" : "string",
+          "description" : "name of prior carrier"
+        }
+      },
+      "title" : "AutoInsuranceCarrier",
+      "description" : "LEGACY ONLY"
+    },
+    "BusinessModelExecution" : {
+      "type" : "object",
+      "properties" : {
+        "businessModelExecutionIdentifier" : {
+          "type" : "string",
+          "description" : "Generated key created upon insert of a row into the Model Execution History (MEH) database."
+        },
+        "businessModelScoreUsageText" : {
+          "type" : "string",
+          "description" : "Defines how a specific business model score is used (e.g. underwriting, rating)"
+        },
+        "executionSourceName" : {
+          "type" : "string",
+          "description" : "The source table which contains the business model execution identifier (Model Execution History (MEH) or Score History database)."
+        }
+      },
+      "title" : "BusinessModelExecution"
+    },
+    "Customer" : {
+      "type" : "object",
+      "required" : [
+        "clientIdentifier"
+      ],
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string",
+          "description" : "Identifier for additional parties such as employees.  The Client Database is actually split into 2 tables.  Master Party Details and Additional Party Details."
+        },
+        "autoClientIdentifier" : {
+          "type" : "string",
+          "description" : "A unique ID used to identify a specific driver. THIS CAN BE FOUND ON THE OT151'S MD350 AS DRIVER_ID."
+        },
+        "autoDriverIdentifier" : {
+          "type" : "string",
+          "description" : "auto driver identifier LEGACY only"
+        },
+        "birthDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date a Customer was born."
+        },
+        "clientIdentifier" : {
+          "type" : "string",
+          "description" : "System generated key which uniquely identifies a customer.  CLNT_ID is an Enterprise Core Identifier."
+        },
+        "customerDriverProfile" : {
+          "$ref" : "#/definitions/CustomerDriverProfile"
+        },
+        "customerEducations" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CustomerEducation"
+          }
+        },
+        "customerSnapshots" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/CustomerSnapshot"
+          }
+        },
+        "driverLicense" : {
+          "$ref" : "#/definitions/DriverLicense"
+        },
+        "genderText" : {
+          "type" : "string",
+          "description" : "if client is male, female, or of unknown gender.",
+          "enum" : [
+            "Male",
+            "Female",
+            "Unknown",
+            "Non-Binary"
+          ]
+        },
+        "organizationTypeCode" : {
+          "type" : "string",
+          "description" : "A code representing the type of organization represented by the customer (e.g. bank, repair shop)"
+        },
+        "originalDriverLicenseDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date that the party was first licensed"
+        },
+        "partyAddresses" : {
+          "type" : "array",
+          "description" : "LEGACY ONLY",
+          "items" : {
+            "$ref" : "#/definitions/PartyAddress"
+          }
+        },
+        "partyName" : {
+          "$ref" : "#/definitions/PartyName"
+        },
+        "postalAddress" : {
+          "$ref" : "#/definitions/PostalAddress"
+        },
+        "relatedPartys" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RelatedParty"
+          }
+        }
+      },
+      "title" : "Customer"
+    },
+    "CustomerDriverProfile" : {
+      "type" : "object",
+      "properties" : {
+        "driverTenureValidFromDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The most current business effective date from which the driver has a continuous driver relationship with a State Farm auto policy based on business rules.  This is independent of policy."
+        }
+      },
+      "title" : "CustomerDriverProfile"
+    },
+    "CustomerEducation" : {
+      "type" : "object",
+      "properties" : {
+        "educationCourseCompletionDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "date the course was completed"
+        },
+        "educationCourseName" : {
+          "type" : "string",
+          "enum" : [
+            "DefensiveDrivingCourse",
+            "SteerClearCourse"
+          ]
+        }
+      },
+      "title" : "CustomerEducation"
+    },
+    "CustomerPortfolioRequest" : {
+      "type" : "object",
+      "required" : [
+        "clientIdentifiers"
+      ],
+      "properties" : {
+        "callingBusinessLineName" : {
+          "type" : "string",
+          "enum" : [
+            "Auto",
+            "Fire"
+          ]
+        },
+        "clientIdentifiers" : {
+          "type" : "array",
+          "description" : "System generated key which uniquely identifies a customer.  CLNT_ID is an Enterprise Core Identifier.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date"
+        },
+        "policyStatusText" : {
+          "type" : "array",
+          "description" : "policy status text",
+          "items" : {
+            "type" : "string",
+            "enum" : [
+              "In Force",
+              "Terminated",
+              "Suspended"
+            ]
+          }
+        },
+        "riskPrimaryUseText" : {
+          "type" : "string",
+          "enum" : [
+            "Personal",
+            "FederalGovernmentEmployee",
+            "FuneralDirectors",
+            "LeasedGovernment",
+            "Farm",
+            "DriverTraining",
+            "Business",
+            "Antique"
+          ]
+        },
+        "terminatedPoliciesYearLimit" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "the number of years to return terminated policies"
+        }
+      },
+      "title" : "CustomerPortfolioRequest"
+    },
+    "CustomerPortfolioResponse" : {
+      "type" : "object",
+      "properties" : {
+        "insurancePolicies" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurancePolicy"
+          }
+        }
+      },
+      "title" : "CustomerPortfolioResponse"
+    },
+    "CustomerSnapshot" : {
+      "type" : "object",
+      "properties" : {
+        "fireTenureStartDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date the person started being an active policyholder on an active State Farm Fire policy."
+        },
+        "militaryCoverageLapseSwitch" : {
+          "type" : "boolean",
+          "description" : "Indicates that a person didn't have insurance coverage for an extended period of time because they were in the military and deployed"
+        },
+        "militaryIndicator" : {
+          "type" : "string",
+          "description" : "Has this person been in the US Military"
+        }
+      },
+      "title" : "CustomerSnapshot"
+    },
+    "CustomizedPortfolioRequest" : {
+      "type" : "object",
+      "required" : [
+        "businessLineNames",
+        "clientIdentifiers",
+        "partyRoleSearchCriteria",
+        "policyStatusText"
+      ],
+      "properties" : {
+        "businessLineNames" : {
+          "type" : "array",
+          "description" : "limits returned agreements to the specified line of business",
+          "items" : {
+            "type" : "string",
+            "enum" : [
+              "Auto"
+            ]
+          }
+        },
+        "clientIdentifiers" : {
+          "type" : "array",
+          "description" : "System generated key which uniquely identifies a customer.  CLNT_ID is an Enterprise Core Identifier.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "effectiveDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Effective date used when requesting policies in view"
+        },
+        "partyRoleSearchCriteria" : {
+          "type" : "string",
+          "enum" : [
+            "Exact Named Insured",
+            "Any Named Insured",
+            "Any Role",
+            "Driver"
+          ]
+        },
+        "policyStatusText" : {
+          "type" : "string",
+          "enum" : [
+            "In Force",
+            "Terminated",
+            "Suspended"
+          ]
+        }
+      },
+      "title" : "CustomizedPortfolioRequest"
+    },
+    "Device" : {
+      "type" : "object",
+      "properties" : {
+        "deviceDescriptionText" : {
+          "type" : "string",
+          "description" : "A free form textual description of a device."
+        },
+        "deviceName" : {
+          "type" : "string",
+          "description" : "Name of the device applicable to the device description value."
+        }
+      },
+      "title" : "Device"
+    },
+    "DriverLicense" : {
+      "type" : "object",
+      "properties" : {
+        "foreignDriverLicenseTypeText" : {
+          "type" : "string",
+          "enum" : [
+            "Foreign",
+            "Unknown",
+            "US"
+          ]
+        }
+      },
+      "title" : "DriverLicense"
+    },
+    "DriverRoleVendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "orderStatusText" : {
+          "type" : "string",
+          "description" : "Status indicating whehter order was placed, received, etc",
+          "enum" : [
+            "Evaluated",
+            "Errored",
+            "NoResultsReturned",
+            "Ordered",
+            "Received",
+            "ToBeOrdered",
+            "WillNotBeOrdered"
+          ]
+        },
+        "vendorReportRequest" : {
+          "$ref" : "#/definitions/VendorReportRequest"
+        }
+      },
+      "title" : "DriverRoleVendorReportRequest"
+    },
+    "EndorsementForm" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementFormType" : {
+          "type" : "string",
+          "description" : "LEGACY ONLY"
+        },
+        "formDescriptionText" : {
+          "type" : "string",
+          "description" : "textual descriptive name of the contractual form"
+        },
+        "formEffectiveDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date when the form was effective.  Typically this should mirror the Term Version Start/Effective Date."
+        },
+        "formNumber" : {
+          "type" : "string",
+          "description" : "number that uniquely identifies a form."
+        },
+        "revision" : {
+          "type" : "string",
+          "description" : "LEGACY ONLY"
+        }
+      },
+      "title" : "EndorsementForm"
+    },
+    "GenericCoverage" : {
+      "type" : "object",
+      "properties" : {
+        "coverageAbbreviationCode" : {
+          "type" : "string",
+          "description" : "A letter or symbol that represents the coverage name."
+        },
+        "coverageName" : {
+          "type" : "string",
+          "description" : "Textual name that defines the Coverage.  (e.g.Collision, Bodily Injury)",
+          "enum" : [
+            "AdultDayCareLiability",
+            "AdultFamilyHomeLiability",
+            "ArsonReward",
+            "BackupOfSewerOrDrain",
+            "BodilyInjury",
+            "BuildingAdditionsAndAlterations",
+            "BusinessProperty",
+            "ChildCareLiability",
+            "ClaimExpenses",
+            "Collapse",
+            "Collision",
+            "Comprehensive",
+            "CreditCardAndForgery",
+            "DamageToPropertyOfOthers",
+            "DeathIndemnityAndSpecificDisability",
+            "DebrisRemoval",
+            "EarthquakeAndVolcanicExplosion",
+            "EmergencyRoadService",
+            "FaceAmount",
+            "Firearms",
+            "FirstAidExpenses",
+            "FuelOilRelease",
+            "HomeRentalCoverage",
+            "IdentityRestorationFraudCoverageCyberEvent",
+            "JewelryFurs",
+            "LocksAndRemoteDevices",
+            "LossOfEarnings",
+            "LossOfUse",
+            "MedicalPayments",
+            "OffPremisesStructure",
+            "PersonalInjury",
+            "PersonalLiability",
+            "PersonalProperty",
+            "PowerInterruption",
+            "PropertyDamage",
+            "PropertyRemoved",
+            "RefrigeratedProducts",
+            "RentalAndTravelExpense",
+            "RentedPersonalProperty",
+            "SilverwareGoldware",
+            "SpecialEvent",
+            "TemporaryRepairs",
+            "TotalDisability",
+            "TreesShrubsAndLandscaping",
+            "UnderinsuredBodilyInjury",
+            "UninsuredBodilyInjury",
+            "UninsuredPropertyDamage",
+            "Vacancy",
+            "VolcanicAction"
+          ]
+        },
+        "coverageSuspendedSwitch" : {
+          "type" : "boolean",
+          "description" : "Indicates if the coverage is suspended for the term/point in time."
+        },
+        "genericCoveragePremiums" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoveragePremium"
+          }
+        },
+        "genericCoverageProperties" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageProperty"
+          }
+        },
+        "policyCoverageIndicator" : {
+          "type" : "string",
+          "description" : "indicates if this is a policy coverage"
+        }
+      },
+      "title" : "GenericCoverage"
+    },
+    "GenericCoverageGroup" : {
+      "type" : "object",
+      "properties" : {
+        "combinedLimitIndicator" : {
+          "type" : "string",
+          "description" : "indicates if the limit is a combined limit"
+        },
+        "fullTermCoverageGroupPremiumAmount" : {
+          "type" : "number",
+          "description" : "The full term amount of premium charged to the customer for a particular coverage group."
+        },
+        "genericCoverageGroupProperties" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageGroupProperty"
+          }
+        },
+        "genericCoverages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverage"
+          }
+        },
+        "groupName" : {
+          "type" : "string",
+          "description" : "The name of a particular coverage group."
+        }
+      },
+      "title" : "GenericCoverageGroup"
+    },
+    "GenericCoverageGroupProperty" : {
+      "type" : "object",
+      "properties" : {
+        "coverageGroupPropertySubtypeText" : {
+          "type" : "string",
+          "description" : "A more detailed classification of the coverage group property (data element).",
+          "enum" : [
+            "Dollar",
+            "Percent"
+          ]
+        },
+        "coverageGroupPropertyTypeText" : {
+          "type" : "string",
+          "description" : "A classification of the coverage group property (data element).",
+          "enum" : [
+            "DeductiblePerOccurrence",
+            "LimitPerDay",
+            "LimitPerItem",
+            "LimitPerOccurrence",
+            "LimitPerPerson",
+            "NumberOfDays",
+            "NumberOfNights",
+            "NumberOfPeople",
+            "Valuation",
+            "WeeklyLimitPerPerson"
+          ]
+        },
+        "coverageGroupPropertyValueDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The value of a coverage group property (data element) that is a date.  Any coverage property that is a date would use this attribute to store the value of the date."
+        },
+        "coverageGroupPropertyValueNumeric" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "The value of a coverage group property (data element) that is a monetary amount.  Any coverage property that is an amount would use this attribute to store the value of the amount."
+        },
+        "coverageGroupPropertyValueText" : {
+          "type" : "string",
+          "description" : "The value of a coverage group property (data element) that is alphanumeric text.  Any coverage property that is alphanumeric would use this attribute to store the textual value."
+        }
+      },
+      "title" : "GenericCoverageGroupProperty"
+    },
+    "GenericCoveragePremium" : {
+      "type" : "object",
+      "properties" : {
+        "coveragePremiumExternalReferenceIdentifier" : {
+          "type" : "string",
+          "description" : "Identifier that points to another object, which gives context to the coverage premium amount.  Initial usage is to populate a risk identifier, but this flexible option can be used for any external"
+        },
+        "coveragePremiumExternalReferenceSourceText" : {
+          "type" : "string",
+          "description" : "textual description of where the coverage premium external reference identifier comes from."
+        },
+        "fullTermCoveragePremiumAmount" : {
+          "type" : "number",
+          "description" : "The premium amount calculated for the entire policy term duration given the policy and risk characteristics of the given policy term slice for a given policy or risk level coverage. Always positive."
+        }
+      },
+      "title" : "GenericCoveragePremium"
+    },
+    "GenericCoverageProperty" : {
+      "type" : "object",
+      "properties" : {
+        "coveragePropertyName" : {
+          "type" : "string",
+          "description" : "A Textual name that defines the Coverage Property (e.g. Section II, Endorsement, PersonalLiabilityLimit, etc.)"
+        },
+        "coveragePropertySubtypeText" : {
+          "type" : "string",
+          "example" : "Dollar",
+          "description" : "A more detailed classification of the coverage property (data element).  e.g. PER PERSON, PER ACCIDENT (which would correspond with a property type of LIMIT)",
+          "enum" : [
+            "Dollar",
+            "Percent"
+          ]
+        },
+        "coveragePropertyTypeText" : {
+          "type" : "string",
+          "description" : "A classification of the coverage property (data element).  e.g. LIMIT, DEDUCTIBLE",
+          "enum" : [
+            "DeductiblePerOccurrence",
+            "Limit",
+            "LimitPerDay",
+            "LimitPerItem",
+            "LimitPerOccurrence",
+            "LimitPerPerson",
+            "NumberOfDays",
+            "NumberOfNights",
+            "NumberOfPeople",
+            "Valuation",
+            "WeeklyLimitPerPerson"
+          ]
+        },
+        "coveragePropertyValueDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The value of a coverage property (data element) that is a date.  Any coverage property that is a date would use this attribute to store the value of the date."
+        },
+        "coveragePropertyValueNumeric" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "The value of a coverage property (data element) that is a monetary amount.  Any coverage property that is an amount would use this attribute to store the value of the amount."
+        },
+        "coveragePropertyValueText" : {
+          "type" : "string",
+          "description" : "The value of a coverage property (data element) that is alphanumeric text.  Any coverage property that is alphanumeric would use this attribute to store the textual value."
+        }
+      },
+      "title" : "GenericCoverageProperty"
+    },
+    "GeographicLocation" : {
+      "type" : "object",
+      "properties" : {
+        "cityCode" : {
+          "type" : "string",
+          "description" : "A State Farm determined code that represents a city."
+        },
+        "cityLimitIndicator" : {
+          "type" : "string",
+          "description" : "An indicator that a risk is located within the city limits."
+        },
+        "countryCode" : {
+          "type" : "string",
+          "description" : "A short alphabetic or numeric geographical code representing a specific country or area."
+        },
+        "countyCode" : {
+          "type" : "string",
+          "description" : "State Farm defined county code"
+        },
+        "countyName" : {
+          "type" : "string",
+          "description" : "textual name for a political and administrative division of a state, providing certain local governmental services."
+        },
+        "latitudeNumber" : {
+          "type" : "number",
+          "description" : "angular distance north or south from the earth's equator measured through 90 degrees."
+        },
+        "longitudeNumber" : {
+          "type" : "number",
+          "description" : "distance measured in degrees east or west from an imaginary line (called the prime meridian) that goes from the North Pole to the South Pole and that passes through Greenwich, England."
+        },
+        "postalAddress" : {
+          "$ref" : "#/definitions/PostalAddress"
+        }
+      },
+      "title" : "GeographicLocation"
+    },
+    "InsurableRisk" : {
+      "type" : "object",
+      "required" : [
+        "insurableRiskLocation",
+        "insurableRiskVehicle"
+      ],
+      "properties" : {
+        "autoClassCode" : {
+          "type" : "string",
+          "description" : "CLASS USED FOR RATING THE RISK WHICH REFLECTS MANY FACTORS THAT VARIES BY STATE AND BY TYPE OF VEHICLE. INCLUDES THE FOLLOWING CONCEPTS- AGE, GENDER, AND MARITAL STATUS OF THE PRINCIPLE DRIVER; DRIVING MILEAGE; VEHICLE USE; SURCHARGE INFORMATION; DISCOUNT INFORMATION, AND MANY MORE."
+        },
+        "autoInsuranceCarrier" : {
+          "$ref" : "#/definitions/AutoInsuranceCarrier"
+        },
+        "estimateAnnualMileageCount" : {
+          "type" : "number",
+          "description" : "Annual mileage of the vehicle as it was captured at the time of the application.  Estimate provided by customer.  This field returns values in miles for the US and in kilometers for Canadian provinces."
+        },
+        "fullTermRiskPremiumAmount" : {
+          "type" : "number",
+          "example" : 555.57,
+          "description" : "Total premium amount amount calculated for the entire policy term duration given the policy and risk characteristics of the given policy term slice for a given insurable risk.  Includes all Risk and Policy Level coverages. Always positive."
+        },
+        "insurableRiskIdentifier" : {
+          "type" : "string",
+          "description" : "System generated key that uniquely identifies an insurable risk."
+        },
+        "insurableRiskIdentifierSequenceNumber" : {
+          "type" : "string",
+          "description" : "A number that ensures uniqueness and tracks the history of the risk(s) associated to the legacy FRED (i.e. policy-risk) identifier."
+        },
+        "insurableRiskLocation" : {
+          "$ref" : "#/definitions/InsurableRiskLocation"
+        },
+        "insurableRiskStructure" : {
+          "$ref" : "#/definitions/InsurableRiskStructure"
+        },
+        "insurableRiskVehicle" : {
+          "$ref" : "#/definitions/InsurableRiskVehicle"
+        },
+        "policyVehicleSuspendedSwitch" : {
+          "type" : "boolean",
+          "description" : "Indicates that for this risk, one or more coverages are suspended."
+        },
+        "ratingRiskCategoryCode" : {
+          "type" : "string",
+          "description" : "Code that represents the Rating Risk Category."
+        },
+        "riskGenericCoverageSet" : {
+          "$ref" : "#/definitions/RiskGenericCoverageSet"
+        },
+        "riskGroupCode" : {
+          "type" : "string",
+          "description" : "CODE THAT REPRESENTS THE TYPE OF INSURANCE MARKET TO WHICH A RISK IS ASSIGNED."
+        },
+        "riskInceptionDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Business effective date which the risk was originally written."
+        },
+        "riskLevelPremiumAdjustments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RiskLevelPremiumAdjustment"
+          }
+        },
+        "riskManagementCode" : {
+          "type" : "string",
+          "description" : "Code (RMCs) used to classify the risk characteristics of a new non-fleet policy."
+        },
+        "riskMarketCode" : {
+          "type" : "string",
+          "description" : "Code that represents the type of insurance market to which a risk is assigned."
+        },
+        "riskPrimaryUseText" : {
+          "type" : "string",
+          "enum" : [
+            "Personal",
+            "FederalGovernmentEmployee",
+            "FuneralDirectors",
+            "LeasedGovernment",
+            "Farm",
+            "DriverTraining",
+            "Business",
+            "Antique"
+          ]
+        },
+        "riskRatingRuleCode" : {
+          "type" : "string",
+          "description" : "Identifies which rating rule applies to the risk."
+        },
+        "riskUsageTypeCode" : {
+          "type" : "string",
+          "description" : "Describes a combination of the type of vehicle and its use for Auto risks, X03TYPE (Vehicle Type)"
+        },
+        "vehicleNumber" : {
+          "type" : "string",
+          "description" : "LEGACY ONLY"
+        }
+      },
+      "title" : "InsurableRisk"
+    },
+    "InsurableRiskLocation" : {
+      "type" : "object",
+      "properties" : {
+        "geographicLocation" : {
+          "$ref" : "#/definitions/GeographicLocation"
+        },
+        "locationMatchCode" : {
+          "type" : "string",
+          "description" : "code that indicates the match quality of the location for the risk (in addition to quality code.  need both)"
+        },
+        "locationQualityCode" : {
+          "type" : "string",
+          "description" : "code that indicates the quality of the location for the risk"
+        },
+        "longitudeLatitudeAccuracyCode" : {
+          "type" : "string",
+          "description" : "code reflecting State Farm's definition of the accuracy of the geocoding match. It is derived from the more detailed Qualitative Marketing Software, Inc. (QMS) Match Code and QMS Location Code."
+        },
+        "stateFarmGeographicStateCode" : {
+          "type" : "string",
+          "description" : "Code used to identify the particular state that a policy is in."
+        },
+        "territoryZoneVersionNumber" : {
+          "type" : "string",
+          "description" : "THE NUMBER THAT IDENTIFIES THE VERSION USED TO ASSIGN THE POLICY`S TERRITORY ZONE."
+        }
+      },
+      "title" : "InsurableRiskLocation"
+    },
+    "InsurableRiskStructure" : {
+      "type" : "object",
+      "properties" : {
+        "residentCount" : {
+          "type" : "integer",
+          "format" : "int32",
+          "description" : "The number of people living within the residential unit, (single family dwelling, apartment unit, etc)"
+        },
+        "structure" : {
+          "$ref" : "#/definitions/Structure"
+        }
+      },
+      "title" : "InsurableRiskStructure"
+    },
+    "InsurableRiskVehicle" : {
+      "type" : "object",
+      "properties" : {
+        "compensatedTransportationIndicator" : {
+          "type" : "string",
+          "description" : "Indicates that a vehicle is used to transport people for compensation (e.g. Uber)"
+        },
+        "driveSafeAndSaveEnrollmentSwitch" : {
+          "type" : "boolean",
+          "description" : "Indicates if customer elects to have drive safe and safe on particular vehicle.   Drive Safe & Save (DSS) is a voluntary program in which State Farm customers consent to having information about their driving collected and shared with State Farm, in order to have a discount applied to their auto insurance premium.  Vehicles enrolled in DSS initially receive a \"participation\" discount for consenting to State Farm receiving their driving information.  The discount is updated to reflect actual mileage and/or driving behaviors at a future renewal.  Customers must be able to enroll new or existing vehicles in any of the currently available DSS options.  Customers may make the decision of whether to enroll at a vehicle level.  Information on which, if any, of these options a vehicle is enrolled in, and whether it should receive the participation discount, must be available for rating and for use in analytics.   at new business time they want to know does the customer want to enroll a particular vehicle in the DSS program."
+        },
+        "insuranceRatingGroupCollisionCode" : {
+          "type" : "string",
+          "description" : "Collision IRG (GRG) - An Insurance Rating Group (IRG) value used as an adjustment to the base premium for collision coverage."
+        },
+        "insuranceRatingGroupComprehensiveCode" : {
+          "type" : "string",
+          "description" : "Comprehensive IRG (DRG) - An Insurance Rating Group (IRG) value used as an adjustment to the base premium for comprehensive coverage."
+        },
+        "liabilityRatingGroupCode" : {
+          "type" : "string",
+          "description" : "A code identifying the level of the vehicle liability rating group that is used to determine the vehicle liability rating factor. Code that identifies how much to adjust the bodily injury and property damage based premium"
+        },
+        "priorAgreementIndexIdentifier" : {
+          "type" : "string",
+          "description" : "Unique identifier that was generated within the Agreement Index database for the insurable risk vehicle."
+        },
+        "transportationIncidentalOccupationDutyIndicator" : {
+          "type" : "string",
+          "description" : "An indication whether or not the vehicle is used for transportation of persons incidental to occupational duties"
+        },
+        "transportationNetworkCompanyUsageIndicator" : {
+          "type" : "string",
+          "description" : "Indicates that a particular risk-vehicle is used for commercial transportation network (e.g. Uber) purposes."
+        },
+        "transportationSchoolChurchEmployeeIndicator" : {
+          "type" : "string",
+          "description" : "An indication whether or not the vehicle is used for transportation of School Children, Church Groups, Friends, Neighbors, Fellow Employees"
+        },
+        "vehicle" : {
+          "$ref" : "#/definitions/Vehicle"
+        },
+        "vehicleTenureValidFromDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date a VIN was first associated to a policy"
+        }
+      },
+      "title" : "InsurableRiskVehicle"
+    },
+    "InsurancePolicy" : {
+      "type" : "object",
+      "required" : [
+        "agreementAccessKey",
+        "agreementIndexIdentifier",
+        "marketableProduct",
+        "stateFarmCompany"
+      ],
+      "properties" : {
+        "agreementAccessKey" : {
+          "type" : "string",
+          "description" : "string of characters used to access the policy in the policy administration master database."
+        },
+        "agreementIndexIdentifier" : {
+          "type" : "string",
+          "description" : "Unique identifier generated within the Agreement Index database.  Agreement Index Identifier is a sequentially generated number used to uniquely identify an Agreement. (A dummy key representing a policy or account number).  A new Agreement Index ID is generated for each agreement. Only one Agreement Index ID is generated to represent all cars on a Multi-Car or Fleet policy. This is the enterprise key for an auto policy set by the Agreement Index service and passed to Hadoop EIDC for use by TDS. When policy number changes, so will this. Agreement Index ID is also kept when an agreement is reassigned to a different region or, in specific cases, when a new policy number is assigned to the same agreement."
+        },
+        "bookOfBusinessIdentifier" : {
+          "type" : "string",
+          "description" : "A unique identifier for a total of all the Insurance Policies and Financial Services Accounts assigned to a specified group or Person."
+        },
+        "insurancePolicyPolicyAdministrationSystemIdentifier" : {
+          "$ref" : "#/definitions/InsurancePolicyPolicyAdministrationSystemIdentifier"
+        },
+        "issuingStateName" : {
+          "type" : "string",
+          "description" : "Full name of policy contract state.  State issuing the policy"
+        },
+        "legacyStatusCode" : {
+          "type" : "string",
+          "description" : "legacy status Code LEGACY only"
+        },
+        "legalPolicyNumber" : {
+          "type" : "string",
+          "description" : "Legacy Policy Number from Policy Number Assignment Service or Policy Number from Policy Center.  It is also used as the access key to numerous other data stores via declaration pages, renewal certificates and other correspondence that defines the legal contract."
+        },
+        "marketableProduct" : {
+          "$ref" : "#/definitions/MarketableProduct"
+        },
+        "nationalAssociationInsuranceCommissionerNumber" : {
+          "type" : "string",
+          "description" : "The NAIC Number of the insurance carrier for a policy."
+        },
+        "operatingDivisionCode" : {
+          "type" : "string",
+          "description" : "A State Farm organizational operating unit that services a set of policies."
+        },
+        "policyDisplayNumber" : {
+          "type" : "string",
+          "description" : "Policy number that is displayed on screens and correspondence."
+        },
+        "policyDisplayPartyName" : {
+          "type" : "string",
+          "description" : "Name lines containing the full names of the parties playing the role of named insureds on the policy.  Typically this is used with a policy mailing address to send mail to the insured(s). Example- \"Doe, John and Jane\""
+        },
+        "policyInceptionDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The business effective date on which this policy first became in-force."
+        },
+        "policyPostalAddress" : {
+          "$ref" : "#/definitions/PolicyPostalAddress"
+        },
+        "policySourceSystemCode" : {
+          "type" : "string",
+          "description" : "A code that identifies the data source for the customer identifier."
+        },
+        "policyStatusText" : {
+          "type" : "string",
+          "enum" : [
+            "In Force",
+            "Terminated",
+            "Suspended"
+          ]
+        },
+        "policyTenureValidFromDate" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-11-28T00:00:00.000Z",
+          "description" : "policy tenure valid date.  inception date could differ from Tenure Date (e.g. when a policy converts to PLM, the inception date will be the conversion date but the tenure date will be the date that the original policy was first bound."
+        },
+        "policyTerminatedDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "the date when the policy is no longer valid"
+        },
+        "policyTerms" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyTerm"
+          }
+        },
+        "specialTaxBasisCode" : {
+          "type" : "string",
+          "description" : "Indicates that there is a special tax consideration for this policy."
+        },
+        "stateFarmCompany" : {
+          "$ref" : "#/definitions/StateFarmCompany"
+        },
+        "timeOutOfForces" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/TimeOutOfForce"
+          }
+        },
+        "vendorReportRequests" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/VendorReportRequest"
+          }
+        }
+      },
+      "title" : "InsurancePolicy"
+    },
+    "InsurancePolicyPartyRole" : {
+      "type" : "object",
+      "required" : [
+        "roleNameText"
+      ],
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string",
+          "description" : "Identifier for additional parties such as employees.  The Client Database is actually split into 2 tables.  Master Party Details and Additional Party Details."
+        },
+        "clientIdentifier" : {
+          "type" : "string",
+          "description" : "System generated key which uniquely identifies a customer.  CLNT_ID is an Enterprise Core Identifier."
+        },
+        "driverRoleVendorReportRequests" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DriverRoleVendorReportRequest"
+          }
+        },
+        "excludedDriverIndicator" : {
+          "type" : "string",
+          "description" : "An indicator that this driver is excluded on the policy."
+        },
+        "financialResponsibilityRequiredReasonText" : {
+          "type" : "string",
+          "description" : "text describing reason for financial responsibility .",
+          "enum" : [
+            "DrivingWhileIntoxicated",
+            "ExcessSpeed",
+            "HomicideAssault",
+            "Other",
+            "RecklessDriving",
+            "StopReportFailure"
+          ]
+        },
+        "militaryFrequentVehicleAccessSwitch" : {
+          "type" : "boolean",
+          "description" : "False indicates that the driver does not have frequent access to any of the vehicles on a policy due to military deployment."
+        },
+        "partyPolicyholderRelationText" : {
+          "type" : "string",
+          "description" : "Text that describes the relationship between the party playing this particular role and the party playing the role of policy holder.",
+          "enum" : [
+            "Employee",
+            "Spouse",
+            "OtherRelative",
+            "Non-Relative"
+          ]
+        },
+        "roleNameCode" : {
+          "type" : "string",
+          "description" : "code for the role being played by the customer on the risk"
+        },
+        "roleNameText" : {
+          "type" : "string",
+          "description" : "describes the role being played by the customer on the risk",
+          "enum" : [
+            "AdditionalInsured",
+            "Driver",
+            "NamedInsured"
+          ]
+        },
+        "secondaryRoleNameText" : {
+          "type" : "string",
+          "description" : "name that further describes the role being played by the customer",
+          "enum" : [
+            "Primary",
+            "Additional"
+          ]
+        }
+      },
+      "title" : "InsurancePolicyPartyRole"
+    },
+    "InsurancePolicyPolicyAdministrationSystemIdentifier" : {
+      "type" : "object",
+      "properties" : {
+        "insurancePolicyPublicIdentifier" : {
+          "type" : "string",
+          "description" : "publicID is a data element specific to Policy Center policy administration system that uniquely identifies a row within a Policy Center table"
+        },
+        "insurancePolicyXpathName" : {
+          "type" : "string",
+          "description" : "Defines the xpath string within which this set of identifying attributes exist"
+        }
+      },
+      "title" : "InsurancePolicyPolicyAdministrationSystemIdentifier"
+    },
+    "MarketableProduct" : {
+      "type" : "object",
+      "required" : [
+        "businessLineCode",
+        "productDescriptionText"
+      ],
+      "properties" : {
+        "businessLineCode" : {
+          "type" : "string",
+          "description" : "A code which represents a State Farm line of business.",
+          "enum" : [
+            "A",
+            "F",
+            "L"
+          ]
+        },
+        "businessLineName" : {
+          "type" : "string",
+          "description" : "A broad categorization of Products, as utilized by State Farm, which includes Auto, Fire, Life, Health, Bank and Mutual Funds.",
+          "enum" : [
+            "Auto",
+            "Fire",
+            "Life"
+          ]
+        },
+        "marketableProductSpecificationIdentifer" : {
+          "type" : "string",
+          "description" : "marketable product spec identifier"
+        },
+        "policyFormCode" : {
+          "type" : "string",
+          "description" : "code representing the form number that defines the base policy contract."
+        },
+        "productCategoryName" : {
+          "type" : "string",
+          "description" : "Categorization used to describe the type of product offered"
+        },
+        "productDescriptionCode" : {
+          "type" : "string",
+          "description" : "A codified value that represents the State Farm product associated to the agreement."
+        },
+        "productDescriptionText" : {
+          "type" : "string",
+          "description" : "A textual description of the State Farm product associated to the agreement.  Ex- \"PRIVATE PASSENGER\", \"HOMEOWNERS POLICY\""
+        },
+        "productName" : {
+          "type" : "string",
+          "description" : "Textual description of the marketable product."
+        },
+        "productPostalStateCode" : {
+          "type" : "string",
+          "description" : "Identifies the jurisdiction in which the product is offered.A code defined by a set of territorial boundaries."
+        },
+        "servicingPolicyAdministrationSystemProductName" : {
+          "type" : "string",
+          "description" : "Policy Admin System (Policy Center) source value from which the Program Selection product information is provided."
+        }
+      },
+      "title" : "MarketableProduct"
+    },
+    "PartyAddress" : {
+      "type" : "object",
+      "properties" : {
+        "geographicLocation" : {
+          "$ref" : "#/definitions/GeographicLocation"
+        },
+        "partyAddressUsageText" : {
+          "type" : "string",
+          "description" : "Indicates use type of address in relation to contact."
+        }
+      },
+      "title" : "PartyAddress"
+    },
+    "PartyName" : {
+      "type" : "object",
+      "properties" : {
+        "firstName" : {
+          "type" : "string",
+          "description" : "The first given name of the Customer."
+        },
+        "lastName" : {
+          "type" : "string",
+          "description" : "The surname of the Customer."
+        },
+        "middleName" : {
+          "type" : "string",
+          "description" : "The middle name or initial of a Customer."
+        },
+        "nameIdentifier" : {
+          "type" : "string",
+          "description" : "Identifier for Customer name"
+        },
+        "organizationName" : {
+          "type" : "string",
+          "description" : "An organization name is a non-personal name that refers to a structured body of one or more persons that exists to perform some common function. This element is used for an associate or third party organization name.  Customer CIM uses customer organization name in organization customer name entity."
+        },
+        "suffixName" : {
+          "type" : "string",
+          "description" : "qualifiers added to the end of a name."
+        }
+      },
+      "title" : "PartyName"
+    },
+    "PolicyEndorsementForm" : {
+      "type" : "object",
+      "properties" : {
+        "formDescriptionText" : {
+          "type" : "string",
+          "description" : "textual descriptive name of the contractual form"
+        },
+        "formNumber" : {
+          "type" : "string",
+          "description" : "number that uniquely identifies a form."
+        },
+        "revisionNumber" : {
+          "type" : "string",
+          "description" : "A number that represents the revision or version of the form."
+        }
+      },
+      "title" : "PolicyEndorsementForm"
+    },
+    "PolicyGenericCoverageSet" : {
+      "type" : "object",
+      "properties" : {
+        "baseFormNumber" : {
+          "type" : "string",
+          "description" : "The form number that contains the base policy legal language."
+        },
+        "genericCoverageGroups" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageGroup"
+          }
+        }
+      },
+      "title" : "PolicyGenericCoverageSet"
+    },
+    "PolicyLevelPremiumAdjustment" : {
+      "type" : "object",
+      "properties" : {
+        "premiumAdjustmentAmount" : {
+          "type" : "number",
+          "example" : 555.1234567,
+          "description" : "The monetary amount of premium that will be applied to a policy premium as result of a specific discount applied to a policy."
+        },
+        "premiumAdjustmentTypeName" : {
+          "type" : "string",
+          "description" : "Label that describes a change in premium."
+        },
+        "premiumAdjustmentValueDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Generic field that can hold the date related to a specific premium adjustment (discount or surcharge)."
+        },
+        "premiumAdjustmentValueText" : {
+          "type" : "string",
+          "description" : "Generic field that can hold a character/code related to a specific premium adjustment (discount or surcharge)."
+        }
+      },
+      "title" : "PolicyLevelPremiumAdjustment"
+    },
+    "PolicyPostalAddress" : {
+      "type" : "object",
+      "properties" : {
+        "addressTypeText" : {
+          "type" : "string",
+          "enum" : [
+            "mailing",
+            "home"
+          ]
+        },
+        "geographicLocation" : {
+          "$ref" : "#/definitions/GeographicLocation"
+        }
+      },
+      "title" : "PolicyPostalAddress"
+    },
+    "PolicySpecificEndorsementForm" : {
+      "type" : "object",
+      "properties" : {
+        "guaranteedRenewalEndorsementPolicyIndicator" : {
+          "type" : "string",
+          "description" : "A UNIQUE AUTO INDICATOR STATING WHETHER OR NOT THE POLICY IS A GUARANTEED RENEWABLE POLICY."
+        }
+      },
+      "title" : "PolicySpecificEndorsementForm"
+    },
+    "PolicyTerm" : {
+      "type" : "object",
+      "required" : [
+        "fullPolicyTermEffectiveDate",
+        "insurableRisks"
+      ],
+      "properties" : {
+        "businessModelExecutions" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/BusinessModelExecution"
+          }
+        },
+        "customers" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Customer"
+          }
+        },
+        "fullPolicyTermEffectiveDate" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-11-28T00:00:00.000Z",
+          "description" : "The business effective date for the full period of time (term) that governs the core policy contract which was created by new business, renewal, rewrite new term or rewrite full term transaction."
+        },
+        "fullPolicyTermExpirationDate" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2017-12-28",
+          "description" : "The business expiration date for the full period of time (term) that governs the core policy contract which was created by new business, renewal, rewrite new term or rewrite full term transaction."
+        },
+        "fullTermPolicyPremiumAmount" : {
+          "type" : "number",
+          "example" : 555.57,
+          "description" : "The premium amount calculated for the entire policy term duration given the policy and risk characteristics of the given policy term slice.  Should equal the sum of full Term Risk Premium Amount for all risks on the policy as well as the sum of all policy level and risk level full Term Coverage Premium Amount for the given policy term slice."
+        },
+        "insurableRisks" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurableRisk"
+          }
+        },
+        "insurancePolicyPartyRoles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/InsurancePolicyPartyRole"
+          }
+        },
+        "minimumPremiumIndicator" : {
+          "type" : "string",
+          "description" : "Indicator if the premium quoted is the minimum premium and not the calculated premium."
+        },
+        "policyEndorsementForms" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyEndorsementForm"
+          }
+        },
+        "policyGenericCoverageSet" : {
+          "$ref" : "#/definitions/PolicyGenericCoverageSet"
+        },
+        "policyLevelPremiumAdjustments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PolicyLevelPremiumAdjustment"
+          }
+        },
+        "policySpecificEndorsementForm" : {
+          "$ref" : "#/definitions/PolicySpecificEndorsementForm"
+        },
+        "policyTermDurationText" : {
+          "type" : "string",
+          "enum" : [
+            "Annual",
+            "HalfYear",
+            "Other"
+          ]
+        },
+        "policyTermNumber" : {
+          "type" : "string",
+          "description" : "sequential number used to reference a specific policy term. this is a policy center attribute."
+        },
+        "policyTransaction" : {
+          "$ref" : "#/definitions/PolicyTransaction"
+        },
+        "termEffectiveDate" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2017-12-28T00:00:00.000Z",
+          "description" : "The business effective date for a period of time where a given set of policy, risk, and coverage characteristics became active within a full policy term."
+        },
+        "termExpirationDate" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "2018-06-28T00:00:00.000Z",
+          "description" : "The business expiration date for a period of time where a given set of policy, risk, and coverage characteristics ends within a full policy term."
+        }
+      },
+      "title" : "PolicyTerm"
+    },
+    "PolicyTransaction" : {
+      "type" : "object",
+      "properties" : {
+        "applicationEffectiveDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Original policy application requested bind date. An agent can submit the application on 1 day, but request that the policy not be bound (become effective) until a future date."
+        },
+        "cancellationNotificationAcknowledgementDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Date that the cancellation acknowledgement was received by operational policy administration system."
+        },
+        "initialCancellationNotificationDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Date that the initial cancellation notification was sent from operational policy administration system."
+        },
+        "mostRecentCancellationNotificationDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Date that the most recent cancellation notification was sent from operational policy administration system."
+        },
+        "nonvendorSwitch" : {
+          "type" : "boolean",
+          "description" : "indicates use of non vendor model  for rating purposes.  Vendor data should not be used"
+        },
+        "policyAdministrationSystemJobNumber" : {
+          "type" : "string",
+          "description" : "System data element that identifies the batch job which processed the policy transaction."
+        },
+        "policyTransactionReasons" : {
+          "type" : "array",
+          "description" : "Reason why the policy transaction was initiated.",
+          "items" : {
+            "$ref" : "#/definitions/PolicyTransactionReason"
+          }
+        },
+        "policyTransactionRequestSourceName" : {
+          "type" : "string",
+          "enum" : [
+            "Insured",
+            "Company"
+          ]
+        },
+        "premiumEvaluationOutcomeText" : {
+          "type" : "string",
+          "description" : "indicates if the premium adjustment was \"premium increased\", \"premium decreased\", \"premium stayed the same\" after the rescore"
+        },
+        "rejectionReasonText" : {
+          "type" : "string",
+          "description" : "Textual reason that that policy transaction was rejected."
+        },
+        "renewalResultText" : {
+          "type" : "string",
+          "description" : "Textual description of the result of the renewal transaction.",
+          "enum" : [
+            "Renew",
+            "NonRenew"
+          ]
+        },
+        "requestIdentifier" : {
+          "type" : "string",
+          "description" : "A unique system generated key that identifies a product request.  request_id is an Enterprise Core Identifier"
+        },
+        "rescindCancellationNotificationDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Date that a rescind cancellation notification was sent from operational policy administration system."
+        },
+        "transactionEffectiveTimestamp" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "The business effective date and time of the transaction processed against the policy.  This could be a future date or a date in the past from the day the transaction was processed."
+        },
+        "transactionSubtypeText" : {
+          "type" : "string",
+          "description" : "Further defines the kind of transaction being processed. each transaction type has its own subtype list.",
+          "enum" : [
+            "Flat",
+            "Midterm",
+            "New",
+            "CompanyTransfer",
+            "StateTransfer",
+            "FullTerm",
+            "NewTerm",
+            "RemainderOfTerm"
+          ]
+        },
+        "transactionTypeText" : {
+          "type" : "string",
+          "description" : "Defines the type of policy transaction being processed.",
+          "enum" : [
+            "NewBusiness",
+            "Cancellation",
+            "PolicyChange",
+            "Reinstatement",
+            "Renewal",
+            "Rewrite"
+          ]
+        }
+      },
+      "title" : "PolicyTransaction"
+    },
+    "PolicyTransactionReason" : {
+      "type" : "object",
+      "properties" : {
+        "policyTransactionReasonName" : {
+          "type" : "string",
+          "description" : "Reason why the policy transaction was initiated.",
+          "enum" : [
+            "EffectiveDateChange",
+            "PaymentReceived",
+            "ProductChange",
+            "CanceledInError",
+            "UnderwritingOverridden",
+            "CompanyTransfer",
+            "StateTransfer",
+            "PolicyConsolidation",
+            "PhysicalObjectSold",
+            "PhysicalObjectIneligiblity",
+            "Vacancy",
+            "CusotmerIneligible",
+            "HighExposure",
+            "NonCompliance",
+            "NonPayment",
+            "CompanyCorrection",
+            "Fraud",
+            "LossHistory",
+            "PaymentHistory",
+            "TotalLoss",
+            "InsuredElsewhere",
+            "InsuredDeceased",
+            "InsuredInError",
+            "Other"
+          ]
+        },
+        "primaryReasonSwitch" : {
+          "type" : "boolean",
+          "description" : "Indicates if this reason was the main reason the transaction was initiated."
+        }
+      },
+      "title" : "PolicyTransactionReason"
+    },
+    "PostalAddress" : {
+      "type" : "object",
+      "properties" : {
+        "cityName" : {
+          "type" : "string",
+          "description" : "The name of the city for the postal address."
+        },
+        "countryName" : {
+          "type" : "string",
+          "description" : "THE COUNTRY NAME (only used in a FOREIGN MAILING ADDRESS)"
+        },
+        "fullStreetAddressText" : {
+          "type" : "string",
+          "description" : "Full, unparsed body of the street component of a postal address."
+        },
+        "postalAddressIdentifier" : {
+          "type" : "string",
+          "description" : "Address to which the Postal Service will deliver mail."
+        },
+        "postalStateCode" : {
+          "type" : "string",
+          "description" : "Alphabetic abbreviation denoting a US State or Canadian province."
+        },
+        "postalZipCode" : {
+          "type" : "string",
+          "description" : "A 5 to 9 digit value assigned by the US and Canadian Postal Service that is assigned to mailing and physical address locations"
+        },
+        "standardizationIndicator" : {
+          "type" : "string",
+          "description" : "Indicates that the postal address has been standardized to government specifications."
+        },
+        "streetAddressLine1Text" : {
+          "type" : "string",
+          "description" : "The first line of text in the address"
+        },
+        "streetAddressLine2Text" : {
+          "type" : "string",
+          "description" : "the second line of text in the address"
+        },
+        "streetAddressLine3Text" : {
+          "type" : "string",
+          "description" : "the third line of text in the address"
+        }
+      },
+      "title" : "PostalAddress"
+    },
+    "PriorDamage" : {
+      "type" : "object",
+      "properties" : {
+        "priorDamageDescriptionText" : {
+          "type" : "string",
+          "description" : "A textual description of the existing damage present on a vehicle."
+        }
+      },
+      "title" : "PriorDamage",
+      "description" : "LEGACY ONLY"
+    },
+    "RelatedParty" : {
+      "type" : "object",
+      "properties" : {
+        "relatedCustomerIdentifier" : {
+          "type" : "string",
+          "description" : "Unique identifier that points to a related party."
+        },
+        "relationshipNatureText" : {
+          "type" : "string",
+          "description" : "Defines the reason that two parties are related (e.g. family business owner)"
+        }
+      },
+      "title" : "RelatedParty"
+    },
+    "RiskGenericCoverageSet" : {
+      "type" : "object",
+      "properties" : {
+        "endorsementForms" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EndorsementForm"
+          }
+        },
+        "genericCoverageGroups" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GenericCoverageGroup"
+          }
+        }
+      },
+      "title" : "RiskGenericCoverageSet"
+    },
+    "RiskLevelPremiumAdjustment" : {
+      "type" : "object",
+      "properties" : {
+        "premiumAdjustmentAmount" : {
+          "type" : "number",
+          "example" : 555.1234567,
+          "description" : "The monetary amount of premium that will be applied to a policy premium as result of a specific discount applied to a policy."
+        },
+        "premiumAdjustmentTypeName" : {
+          "type" : "string",
+          "enum" : [
+            "Vehicle Safety"
+          ]
+        },
+        "premiumAdjustmentValueDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "Generic field that can hold the date for the value related to a specific premium adjustment (discount or surcharge)."
+        },
+        "premiumAdjustmentValueText" : {
+          "type" : "string",
+          "description" : "Generic field that can hold a character/code related to a specific premium adjustment (discount or surcharge)."
+        }
+      },
+      "title" : "RiskLevelPremiumAdjustment"
+    },
+    "StateFarmCompany" : {
+      "type" : "object",
+      "properties" : {
+        "stateFarmAlphaCompanyCode" : {
+          "type" : "string",
+          "description" : "4 digit enterprise alpha code for company"
+        },
+        "stateFarmCompanyName" : {
+          "type" : "string",
+          "description" : "The name of the insurance company insuring the policy"
+        },
+        "stateFarmNumericCompanyCode" : {
+          "type" : "string",
+          "description" : "An identifier used to designate a State Farm legal entity. 4 digit number"
+        }
+      },
+      "title" : "StateFarmCompany"
+    },
+    "Structure" : {
+      "type" : "object",
+      "properties" : {
+        "devices" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Device"
+          }
+        }
+      },
+      "title" : "Structure"
+    },
+    "TimeOutOfForce" : {
+      "type" : "object",
+      "properties" : {
+        "timeOutOfForceCancellationReasonText" : {
+          "type" : "string",
+          "description" : "Text describing the reason for cancellation resulting in time out of force."
+        },
+        "timeOutOfForceCancellationSourceName" : {
+          "type" : "string",
+          "description" : "The party that initiated the cancellation."
+        },
+        "timeOutOfForceEndDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date for which the time out of force ends."
+        },
+        "timeOutOfForceLegacyStatusCode" : {
+          "type" : "string",
+          "description" : "A 2 position status code from the legacy policy master record (PMR) when the time out of force event occurred."
+        },
+        "timeOutOfForceStartDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "The date for which the time out of force begins."
+        }
+      },
+      "title" : "TimeOutOfForce"
+    },
+    "Vehicle" : {
+      "type" : "object",
+      "required" : [
+        "makeName",
+        "modelName",
+        "modelYearNumber"
+      ],
+      "properties" : {
+        "additionalEquipments" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/AdditionalEquipment"
+          }
+        },
+        "antiLockBrakeCode" : {
+          "type" : "string",
+          "description" : "Identifies whether or not the insured risk is equipped with an Anti Lock Brake System"
+        },
+        "antiTheftDeviceCode" : {
+          "type" : "string",
+          "description" : "The Type of Anti Theft Device(s) equipped on the insured risk."
+        },
+        "antiqueIndicator" : {
+          "type" : "string",
+          "description" : "A Y/N value that represents if the vehicle meets requirements to be classified as antique."
+        },
+        "axleCode" : {
+          "type" : "string",
+          "description" : "A value that represents the number of axles on the vehicle (typically single or tandem axles)"
+        },
+        "bodyStyleDescriptionText" : {
+          "type" : "string",
+          "description" : "Contains the body style of the vehicle."
+        },
+        "bodyTypeCode" : {
+          "type" : "string",
+          "description" : "Body type serves as an additional refinement or identification of the commercial vehicle body. This will vary by vehicle."
+        },
+        "classicIndicator" : {
+          "type" : "string",
+          "description" : "A Y/N value that represents if the vehicle meets requirements to be classified as classic."
+        },
+        "customizedIndicator" : {
+          "type" : "string",
+          "description" : "An indicator that denotes the risk is customized."
+        },
+        "engineCylinderCount" : {
+          "type" : "number",
+          "description" : "The number of cylinders for a vehicles engine."
+        },
+        "engineDisplacementCount" : {
+          "type" : "number",
+          "description" : "The displacement of an engine."
+        },
+        "engineHorsepowerCount" : {
+          "type" : "number",
+          "description" : "The measure of engine output defined as horsepower."
+        },
+        "grossVehicleWeightNumber" : {
+          "type" : "number",
+          "description" : "The manufacturer gross vehicle weight for a vehicle. This is a range of the vehicle weight. This is based on CMRCL_VEH_GRSS_WGT_CNT, or the gross weight."
+        },
+        "highPerformanceVehicleIndicator" : {
+          "type" : "string",
+          "description" : "Vehicle whose rating is based upon the ratio of weight to the horsepower, or the horsepower to the displacement ratio."
+        },
+        "highTheftCode" : {
+          "type" : "string",
+          "description" : "A value that represents if the vehicle is considered a high theft target."
+        },
+        "kitCarSwitch" : {
+          "type" : "boolean",
+          "description" : "indicates if car is a kit car."
+        },
+        "limitedCommuteIndicator" : {
+          "type" : "string",
+          "description" : "An indicator that represents that the vehicle includes limited commute, usually a result of carpooling."
+        },
+        "makeName" : {
+          "type" : "string",
+          "description" : "A label that identifies, within a manufacturer DIVISION, a given line of vehicles, as evidenced by a style or manner identified by the manufacturer's name or registered trademark."
+        },
+        "manufactureUnavailableReasonCode" : {
+          "type" : "string",
+          "description" : "A code that represents the reason that the manufacturer detail cannot be obtained."
+        },
+        "manufacturedDivisionText" : {
+          "type" : "string",
+          "description" : "Indicates the manufacturing division of the insured vehicle."
+        },
+        "manufacturerCode" : {
+          "type" : "string",
+          "description" : "Corporation that manufactured the vehicle."
+        },
+        "manufacturerName" : {
+          "type" : "string",
+          "description" : "The name of the manufacture of the vehicle"
+        },
+        "manufacturerSuggestedRetailBasePriceAmount" : {
+          "type" : "number",
+          "example" : 30000,
+          "description" : "the price the manufacturer suggests for the item (vehicle) without any additional features."
+        },
+        "modelName" : {
+          "type" : "string",
+          "description" : "A label that identifies within a manufacturer's give MAKE of object (vehicle), which style or design this is."
+        },
+        "modelSpecificationIdentifier" : {
+          "type" : "string",
+          "description" : "Unique identifier that represents a vehicle model specification that is common to many individual vehicles.  This identifier associates State Farm defined rating codes to the vehicle model specification-  IRG (insurance rating group), VSD (vehicle safety discount), AND LRG (liability rating group)."
+        },
+        "modelSpecificationUnavailableReasonCode" : {
+          "type" : "string",
+          "description" : "The reason that a model specification cannot be obtained for the vehicle."
+        },
+        "modelYearNumber" : {
+          "type" : "string",
+          "description" : "A number that represents the model year of the vehicle as determined by the manufacturer. This is not affected by the year the vehicle was actually built or sold."
+        },
+        "newPurchaseAmount" : {
+          "type" : "number",
+          "example" : 555.57,
+          "description" : "Dollar amount of  the vehicle purchase price when the vehicle was new."
+        },
+        "physicalObjectIdentifier" : {
+          "type" : "string",
+          "description" : "physical object identifier for vehicles"
+        },
+        "priorDamages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/PriorDamage"
+          }
+        },
+        "purchaseDate" : {
+          "type" : "string",
+          "format" : "date",
+          "description" : "DATE THE VEHICLE WAS PURCHASED. The month, day and year on which the object (vehicle) was bought and begun to be used for its intended purpose."
+        },
+        "runningLightsCode" : {
+          "type" : "string",
+          "description" : "Identifies whether or not the insured risk is equipped with Daytime Running Lamps."
+        },
+        "statedValueAmount" : {
+          "type" : "number",
+          "example" : 555.57,
+          "description" : "Antique/Classic Vehicle Stated Amount - THE STATED AMOUNT VALUE FOR AN ANTIQUE OR CLASSIC VEHICLE. Van Customization Amount - INDICATES THE DOLLAR AMOUNT OF CUSTOMIZATION FOR A VAN."
+        },
+        "totalManufacturerSuggestedRetailPriceAmount" : {
+          "type" : "number",
+          "example" : 40000,
+          "description" : "This property calculates the Total MSRP value as the sum of Base MSRP, Additional Body Cost, and Permanently Mounted Special Equipment Cost"
+        },
+        "vehicleCustomizationAmount" : {
+          "type" : "number",
+          "example" : 50055.55,
+          "description" : "INDICATES THE DOLLAR AMOUNT OF CUSTOMIZATION FOR A vehicle (typically a van)"
+        },
+        "vehicleIdentificationNumber" : {
+          "type" : "string",
+          "description" : "Indicates the vehicle identification number (VIN) that is attached to the insured vehicle."
+        },
+        "vehicleIdentificationNumberCheckResultCode" : {
+          "type" : "string",
+          "description" : "Indicates if the VIN number entered is valid for vehicles manufactured in 1981 or later."
+        },
+        "vehiclePartyRoles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/VehiclePartyRole"
+          }
+        },
+        "vehicleVendorReportRequests" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/VehicleVendorReportRequest"
+          }
+        }
+      },
+      "title" : "Vehicle"
+    },
+    "VehiclePartyRole" : {
+      "type" : "object",
+      "properties" : {
+        "additionalPartyIdentifier" : {
+          "type" : "string",
+          "description" : "Identifier for additional parties such as employees.  The Client Database is actually split into 2 tables.  Master Party Details and Additional Party Details."
+        },
+        "clientIdentifier" : {
+          "type" : "string",
+          "description" : "System generated key which uniquely identifies a customer.  CLNT_ID is an Enterprise Core Identifier."
+        },
+        "roleNameText" : {
+          "type" : "string",
+          "description" : "Name of the role a party plays in the context of a physical object.",
+          "enum" : [
+            "Lessor",
+            "Lienholder",
+            "VehicleRegisteredOwner",
+            "Employee"
+          ]
+        },
+        "thirdPartyIdentifier" : {
+          "type" : "string",
+          "description" : "number used to uniquely identify a Party, other than the principal Roles, involved in a Transaction, Agreement or Claim."
+        }
+      },
+      "title" : "VehiclePartyRole"
+    },
+    "VehicleVendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "orderStatusText" : {
+          "type" : "string",
+          "description" : "Status indicating whehter order was placed, received, etc",
+          "enum" : [
+            "Evaluated",
+            "Errored",
+            "NoResultsReturned",
+            "Ordered",
+            "Received",
+            "ToBeOrdered",
+            "WillNotBeOrdered"
+          ]
+        },
+        "vendorReportRequest" : {
+          "$ref" : "#/definitions/VendorReportRequest"
+        }
+      },
+      "title" : "VehicleVendorReportRequest"
+    },
+    "VendorReportRequest" : {
+      "type" : "object",
+      "properties" : {
+        "addressDiscrepancyUnresolvedSwitch" : {
+          "type" : "boolean",
+          "description" : "switch returns true if an address discrepancy between a vendor consumer report address and the mailing postal address for the party playing a role on an insurance policy has not been resolved"
+        },
+        "orderStatusText" : {
+          "type" : "string",
+          "description" : "Status indicating whehter order was placed, received, etc",
+          "enum" : [
+            "Evaluated",
+            "Errored",
+            "NoResultsReturned",
+            "Ordered",
+            "Received",
+            "ToBeOrdered",
+            "WillNotBeOrdered"
+          ]
+        },
+        "reportRequestIdentifier" : {
+          "type" : "string",
+          "description" : "A non-meaningful key that uniquely identifies a product/vendor report request."
+        },
+        "reportRequestReasonText" : {
+          "type" : "string",
+          "description" : "reason why report was ordered or reordered. Examples- New Policy, Renewal, Rescore, Correction, ManualReorder, Conversion",
+          "enum" : [
+            "Conversion",
+            "Correction",
+            "ManualReorder",
+            "NewPolicy",
+            "Renewal",
+            "Rescore"
+          ]
+        },
+        "reportRequestTypeName" : {
+          "type" : "string",
+          "description" : "A value to represent the set of consumer reports at a high level.",
+          "enum" : [
+            "Driver",
+            "Policy",
+            "Vehicle"
+          ]
+        },
+        "requestReceivedTimestamp" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "2018-11-28T20:48:00.725Z",
+          "description" : "The time that Lexus Nexus received the order"
+        }
+      },
+      "title" : "VendorReportRequest"
+    }
+  }
+}

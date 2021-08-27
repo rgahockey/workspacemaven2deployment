@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jsoningestion 
+  namespace: jsoningestion 
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: jsoningestion 
+  template:
+    metadata:
+      labels:
+        app: jsoningestion
+    spec:
+      volumes:
+        - name: ji-pv-storage
+          persistentVolumeClaim:
+            claimName: jsoningest-pvc
+        - name: ja-pv-storage
+          persistentVolumeClaim:
+            claimName: jsonarchive-pvc
+      containers:
+      - command:
+        - /app/launchspring.sh
+        env:
+        - name: JSONSERVICETOKEN
+          valueFrom:
+            secretKeyRef:
+              name: rootfolderservice
+              key: rootfolderkey
+        - name: SYSTEMURL
+          valueFrom:
+            secretKeyRef:
+              name: systemurl
+              key:  systemurlkey
+        - name: TOKENSCRIPTPATH
+          valueFrom:
+            secretKeyRef:
+              name: tokenscriptpath
+              key:  tokenscriptpathkey
+        - name: OUTPUTPATH
+          valueFrom:
+            secretKeyRef:
+              name: outputpath
+              key:  outputpathkey
+        - name: GENERATEGEPHI
+          valueFrom:
+            secretKeyRef:
+              name: generategephi
+              key:  generategephikey
+        - name: SPRINGBOOTPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: springbootpassword
+              key:  springbootpasswordkey             
+        image: quay.io/rgahockey3/jsoningestion:latest 
+        volumeMounts:
+          - mountPath: "/files"
+            name: ji-pv-storage
+          - mountPath: "/archives"
+            name: ja-pv-storage
+        imagePullPolicy: Always
+        name: jsoningestion
+        resources: {}
+      dnsPolicy: ClusterFirst
+      serviceAccount: jsoningestion 
+      securityContext:
+         enabled: true
+         runAsUser: 1000680000
+         fsGroup: 1000680000
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+  updateStrategy:
+    type: OnDelete
+

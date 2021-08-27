@@ -1,0 +1,771 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "Salesforce Controls Profile Management Service",
+    "version" : "1.0.0-SNAPSHOT",
+    "title" : "sfdc-profile-mgmt-rs",
+    "contact" : {
+      "name" : "fred flintstone",
+      "email" : "fred.flintstone.xxxx@statefarm.com"
+    },
+    "license" : {
+      "name" : "State Farm",
+      "url" : "http://www.statefarm.com"
+    }
+  },
+  "host" : "salesforcecntlsmgmt-env1.cfapps-71b.xxx.test.place.org",
+  "basePath" : "/sfdc-profile-mgmt-rs",
+  "tags" : [
+    {
+      "name" : "profile-controller",
+      "description" : "Profile Controller"
+    }
+  ],
+  "paths" : {
+    "/creUpdGrpMembList" : {
+      "post" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Create/Update GroupMember List.",
+        "description" : "This creates GroupMemberList in GRP_MEMB_LIST table",
+        "operationId" : "creUpdGrpMembListUsingPOST",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "in" : "body",
+            "name" : "creUpdGrpMembListRequest",
+            "description" : "creUpdGrpMembListRequest",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CreUpdGrpMembListRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/CreUpdGrpMembListResult"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/creUpdProfileVersion" : {
+      "post" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Create/Update Profiles.",
+        "description" : "This creates a profile version with dummy sandbox name (if it is not exists already) in SANDBOX_RLTN_TO_PRFL_VER table and Update Profiles in SALESFORCE_PRFL_VER table",
+        "operationId" : "creUpdProfileVersionUsingPOST",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "in" : "body",
+            "name" : "creUpdProfileVersion",
+            "description" : "creUpdProfileVersion",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CreUpdProfileVersionRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/CreUpdProfileVersionResult"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/creUpdSandboxVersionRelationship" : {
+      "post" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Create/Update SandboxVersionRelationship.",
+        "description" : "This creates a Sandbox profile Name and version in SANDBOX_RLTN_TO_PRFL_VER table",
+        "operationId" : "creUpdSandboxVersionRelationshipUsingPOST",
+        "consumes" : [
+          "application/json"
+        ],
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "in" : "body",
+            "name" : "creUpdSandboxVersionRelationshipRequest",
+            "description" : "creUpdSandboxVersionRelationshipRequest",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/CreUpdSandboxVersionRelationshipRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/CreUpdSandboxVersionRelationshipResult"
+            }
+          },
+          "201" : {
+            "description" : "Created"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/deleteProfileVersion" : {
+      "delete" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Delete records from SALESFORCE_PRFL_VER and SANDBOX_RLTN_TO_PRFL_VER tables for given profile version.",
+        "description" : "Delete records from SALESFORCE_PRFL_VER and SANDBOX_RLTN_TO_PRFL_VER tables for given profile version",
+        "operationId" : "deleteProfileVersionUsingDELETE",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "versionNumber",
+            "in" : "query",
+            "description" : "versionNumber",
+            "required" : true,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/DeleteProfileVersionResult"
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/deleteSandboxVersionRelationship" : {
+      "delete" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Delete records from SANDBOX_RLTN_TO_PRFL_VER table for given SandBox version.",
+        "description" : "Delete records from SANDBOX_RLTN_TO_PRFL_VER table for given SandBox Name and version.",
+        "operationId" : "deleteSandboxVersionRelationshipUsingDELETE",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "in" : "body",
+            "name" : "deleteSandboxVersionRelationshipRequest",
+            "description" : "deleteSandboxVersionRelationshipRequest",
+            "required" : true,
+            "schema" : {
+              "$ref" : "#/definitions/DeleteSandboxVersionRelationshipRequest"
+            }
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/DeleteSandboxVersionRelationshipResult"
+            }
+          },
+          "204" : {
+            "description" : "No Content"
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/getAllProfileNames" : {
+      "get" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Retrieve All Profile name, version and sandbox names from SANDBOX_RLTN_TO_PRFL_VER & SALESFORCE_PRFL_VER tables.",
+        "description" : "Retrieve All Profile name, version and sandbox names from SANDBOX_RLTN_TO_PRFL_VER & SALESFORCE_PRFL_VER tables.",
+        "operationId" : "getAllProfileNamesUsingGET",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ProfileNamesResult"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/getProfileNames" : {
+      "get" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Retrieve Profile name and version from SALESFORCE_PRFL_VER table for given profile version.",
+        "description" : "Retrieve Profile name and version from SALESFORCE_PRFL_VER table for given profile version.",
+        "operationId" : "getProfileNamesUsingGET",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "versionNumber",
+            "in" : "query",
+            "description" : "versionNumber",
+            "required" : true,
+            "type" : "integer",
+            "format" : "int32"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ProfileNamesResult"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/getProfileVersions" : {
+      "get" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Retrieve Profile version number details",
+        "description" : "Retrieves profile version number from SANDBOX_RLTN_TO_PRFL_VER table",
+        "operationId" : "getProfileVersionsUsingGET",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "sandboxName",
+            "in" : "query",
+            "description" : "sandboxName",
+            "required" : false,
+            "type" : "string"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/ProfileVersionsResult"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/getSandboxProfileNames" : {
+      "get" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Retrieve Profile distinct profile names from SALESFORCE_PRFL_VER table for given profile name.",
+        "description" : "Retrieve Profile distinct profile names from SALESFORCE_PRFL_VER table for given profile name.",
+        "operationId" : "getSandboxProfileNamesUsingGET",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "sandboxName",
+            "in" : "query",
+            "description" : "sandboxName",
+            "required" : true,
+            "type" : "string"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/SandboxProfileNamesResult"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    },
+    "/getUserProfileNames" : {
+      "get" : {
+        "tags" : [
+          "profile-controller"
+        ],
+        "summary" : "Retrieve User Profile name details",
+        "description" : "Retrieves User Profile name list from GRP_MEMB_LIST table for the given emailAlias",
+        "operationId" : "getUserProfileNamesUsingGET",
+        "produces" : [
+          "application/json"
+        ],
+        "parameters" : [
+          {
+            "name" : "X-SF_SSO_TOKEN",
+            "in" : "header",
+            "required" : false,
+            "type" : "string"
+          },
+          {
+            "name" : "emailAlias",
+            "in" : "query",
+            "description" : "emailAlias",
+            "required" : true,
+            "type" : "string"
+          }
+        ],
+        "responses" : {
+          "200" : {
+            "description" : "OK",
+            "schema" : {
+              "$ref" : "#/definitions/UserProfileNameResult"
+            }
+          },
+          "401" : {
+            "description" : "Unauthorized"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          }
+        },
+        "deprecated" : false
+      }
+    }
+  },
+  "definitions" : {
+    "CreUpdGrpMembListRequest" : {
+      "type" : "object",
+      "properties" : {
+        "groupMemberDetails" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/GroupMemberDetail"
+          }
+        }
+      },
+      "title" : "CreUpdGrpMembListRequest"
+    },
+    "CreUpdGrpMembListResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CreUpdGrpMembListResult"
+    },
+    "CreUpdProfileVersionRequest" : {
+      "type" : "object",
+      "properties" : {
+        "deleteExistingProfiles" : {
+          "type" : "boolean"
+        },
+        "profiles" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Profile"
+          }
+        },
+        "versionNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      },
+      "title" : "CreUpdProfileVersionRequest"
+    },
+    "CreUpdProfileVersionResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "returnValue" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CreUpdProfileVersionResult"
+    },
+    "CreUpdSandboxVersionRelationshipRequest" : {
+      "type" : "object",
+      "properties" : {
+        "sandboxName" : {
+          "type" : "string"
+        },
+        "versionNumbers" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "title" : "CreUpdSandboxVersionRelationshipRequest"
+    },
+    "CreUpdSandboxVersionRelationshipResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "returnValue" : {
+          "type" : "string"
+        }
+      },
+      "title" : "CreUpdSandboxVersionRelationshipResult"
+    },
+    "DeleteProfileVersionResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "returnValue" : {
+          "type" : "string"
+        }
+      },
+      "title" : "DeleteProfileVersionResult"
+    },
+    "DeleteSandboxVersionRelationshipRequest" : {
+      "type" : "object",
+      "properties" : {
+        "deleteAllRelationshipsInd" : {
+          "type" : "boolean"
+        },
+        "sandboxName" : {
+          "type" : "string"
+        },
+        "versionNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      },
+      "title" : "DeleteSandboxVersionRelationshipRequest"
+    },
+    "DeleteSandboxVersionRelationshipResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "returnValue" : {
+          "type" : "string"
+        }
+      },
+      "title" : "DeleteSandboxVersionRelationshipResult"
+    },
+    "GroupMemberDetail" : {
+      "type" : "object",
+      "properties" : {
+        "alias" : {
+          "type" : "string"
+        },
+        "endDate" : {
+          "type" : "string"
+        },
+        "grpKeyId" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "membListName" : {
+          "type" : "string"
+        },
+        "startDate" : {
+          "type" : "string"
+        },
+        "terminateMember" : {
+          "type" : "boolean"
+        }
+      },
+      "title" : "GroupMemberDetail"
+    },
+    "Profile" : {
+      "type" : "object",
+      "properties" : {
+        "code" : {
+          "type" : "string"
+        },
+        "groupCode" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "number" : {
+          "type" : "string"
+        },
+        "testProfileSwitch" : {
+          "type" : "boolean"
+        }
+      },
+      "title" : "Profile"
+    },
+    "ProfileNamesResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "profileList" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Profile"
+          }
+        }
+      },
+      "title" : "ProfileNamesResult"
+    },
+    "ProfileVersionsResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "sandboxName" : {
+          "type" : "string"
+        },
+        "versions" : {
+          "type" : "array",
+          "items" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }
+      },
+      "title" : "ProfileVersionsResult"
+    },
+    "ProfilesInfoResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "profileList" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "object",
+            "additionalProperties" : {
+              "type" : "object"
+            }
+          }
+        }
+      },
+      "title" : "ProfilesInfoResult"
+    },
+    "Properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "additionalProperties" : {
+        "type" : "object"
+      }
+    },
+    "SandboxProfileNamesResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "profileList" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Profile"
+          }
+        }
+      },
+      "title" : "SandboxProfileNamesResult"
+    },
+    "UserProfileNameResult" : {
+      "type" : "object",
+      "properties" : {
+        "errorMessage" : {
+          "type" : "string"
+        },
+        "membListName" : {
+          "type" : "string"
+        },
+        "profileList" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Profile"
+          }
+        }
+      },
+      "title" : "UserProfileNameResult"
+    }
+  }
+}

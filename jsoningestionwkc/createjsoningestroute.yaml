@@ -1,0 +1,149 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: jsoningest
+  namespace: jsoningestion 
+  labels:
+    app: jsoningestion
+spec:
+  host: russapp1.us-south.containers.appdomain.cloud
+  to:
+    kind: Service
+    name: jsoningestion-service
+    weight: 100
+  port:
+    targetPort: jiports
+  tls:
+    termination: edge
+    certificate: |-
+      -----BEGIN CERTIFICATE-----this is the signed CR by the authority (Rich)
+      MIIEkjCCAnqgAwIBAgICEA0wDQYJKoZIhvcNAQELBQAwWzELMAkGA1UEBhMCVVMx
+      CzAJBgNVBAgMAk1JMRIwEAYDVQQKDAlJQk0gREFFTEwxKzApBgNVBAMMImFyY2gu
+      ZGFlbGwuaWJtLmNvbSBJbnRlcm1lZGlhdGUgQ0EwHhcNMjEwMTIwMTkzODE5WhcN
+      MjIwMTMxMTkzODE5WjAuMSwwKgYDVQQDDCN1cy1zb3V0aC5jb250YWluZXJzLmFw
+      cGRvbWFpbi5jbG91ZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALRY
+      zJB5tpRbGycATXMKBmWiSfk4q/lW0AKuIIzgme+BQXqhks6uA0PYcvCXBXhSa4/w
+      OvGtpoGJUVbhlSdTzPUhhZ0SyC0qs/UasFtOLtVbWDbMp8Yg+qMbnF9wwZDle3Ez
+      nxZmTgv3KJp+e5V3kY+M2p/IV9WmkcbU7y3p55w/SZ9cC5hTho4TS/jIsPKm3UJW
+      Hu9JazJTmtSnVDexPRc3Z2PUzhAHAM7fhRZM7jieL+PMK9zievQrzzj6ENM1iMBl
+      HOky+ZHZRwE/MqET6Pu0MveOrDojJzKABaPqbERZmHHjcOA7T2BLjM0enBuBaaAu
+      eU6GSEr90tRIS8QudX0CAwEAAaOBjDCBiTCBhgYDVR0RBH8wfYIlKi51cy1zb3V0
+      aC5jb250YWluZXJzLmFwcGRvbWFpbi5jbG91ZIISaW50ZXJuYWwtbmdpbngtc3Zj
+      ghMqLnN2Yy5jbHVzdGVyLmxvY2FsggdhcGktc3ZjggUqLmFwaYINaWJtLW5naW54
+      LXN2Y4IMemVuLWNvcmUtYXBpMA0GCSqGSIb3DQEBCwUAA4ICAQAtSPhH4cXT6uAO
+      slIFeNV++h0C3+nO2bUdklslIsP81lRwoT2pYq/3P0DbDL9EEQ3oeSg3BtIlDt7I
+      lrVhMRBTzsBXjGZQdDmC18tV5pbOf39pOxjlmbALpnNgwyKS2F1jXy3k3BKBLGVx
+      xa7Dyi/vgb//RW1jMHIbqniWJdPsplTXp4acLO+FttxT2B7b5P66gNlDfYAqhFXf
+      2dBqbJEOehd1bh7cGuwgCeP1w6lrt1YpMMdb1/V51hgINGMejmaNV7l7CtWe94dz
+      Ypv5MbfRQRmkRsLUv+7suVmts8Sgs3oOVNyS246BUCO+ZhnKZtYac5npDQ0Fko+/
+      VwwjZwf7/48FUj1it5263wGqQJdCRNdfxdL42+n75QZ1VnoVMszWhMlqh/Yu4bTX
+      R6TtQlFIfb3AnRfZotCkiOPxgm8W4MK4KEWpu0JSD9u/gmMfxAJbTwio5CsaPHQn
+      siNco8sq8wW+a2+Xo2ygv72y3cbvdi09+Q/eL90lKiRhszy/E+xH8GXXeCjs/qvk
+      yeDA3GXzFQNht7lovpl3CIQI0oOAO1A5oanu5ggnUltYdSpIzI4fNc7ilTCVevVF
+      LlnjQ8ZGWdJ47gWx+lc9solSPcQigP/9gZh/wv/vzl649ednJg8dyFrz7z6mg44G
+      q8mkCIWRS23ko+MuEFnzAbpsWcoKcQ==
+      -----END CERTIFICATE-----
+    key: |-
+      -----BEGIN RSA PRIVATE KEY-----this is the generated private key from the CSR
+      MIIEowIBAAKCAQEAtFjMkHm2lFsbJwBNcwoGZaJJ+Tir+VbQAq4gjOCZ74FBeqGS
+      zq4DQ9hy8JcFeFJrj/A68a2mgYlRVuGVJ1PM9SGFnRLILSqz9RqwW04u1VtYNsyn
+      xiD6oxucX3DBkOV7cTOfFmZOC/comn57lXeRj4zan8hX1aaRxtTvLennnD9Jn1wL
+      mFOGjhNL+Miw8qbdQlYe70lrMlOa1KdUN7E9FzdnY9TOEAcAzt+FFkzuOJ4v48wr
+      3OJ69CvPOPoQ0zWIwGUc6TL5kdlHAT8yoRPo+7Qy946sOiMnMoAFo+psRFmYceNw
+      4DtPYEuMzR6cG4FpoC55ToZISv3S1EhLxC51fQIDAQABAoIBAHhLKtfLd69pPak8
+      GGz9aNrt7y2fUYaVE1ZWUzvkrIkGzGhB0ayugVsFy1UTRwDE6R4vfQGrdH6+21R6
+      T4TV7sYrP/ZPitolu7dnv+6HLdH+hc63n8kWQlf9mMZIbbR6fWY6qojEYJa2m4zB
+      hSljgeIgb8tYVM4btuzLJ2aWuHiM11UEVbEpM5/NhzvUhXucMGQ5TOBTM0GgKiG8
+      URHICFvir8RHjFE0JTEYJrQGLiS2BQ3ubzOKSBI/E5nh+tMsIQNNLkvvvIKbGTwj
+      lWWvngV9RwreiCGUN62Pn72BS5pc2MmCkNT6nRuKrqlhhDFQxvkZ0XD8Xq+5ju+U
+      9JUWaTkCgYEA4U5A6CQOuJLBIopCtID+rKO2Ls6N739hSHfjM0F2LieYONnq/uUr
+      u4opoaiFuJ77b5w8VtDwjJ0uh96WDZvQpnxgsjSvRL6k40oYDEeQ6INxLsTWDmxT
+      wyXXz8k8ZhBIw30By41O51GgsL2JB60SZUP8RuxfIGNnNGSP1xtyFNsCgYEAzOqQ
+      qFLcCCDdTNqkkkr4+JKrCPXmOXvCvDtxAx4p8hCxF5yZSEgrkbJm4IjpLLSD1NvS
+      VEGXX03A0dkEVDyWvivOb7AoQKiSzgvCWtNuz6tGF/rL5qquq6MzrNW4Jig1xy46
+      xqANsWBo/8Kb1jcxHWP08vGe0wkMrU36O2t/QocCgYAJ7M+RKl13pgdaBSsxFmmh
+      o0iYQUMhZMQdVCKvFFgnalkbUAY5GlFV3p084NabLm23GfPSgzvFhfsRwy1rBg0n
+      +FyuHQIHjjpnRNFQYSqyA3BN9h/T3NPHyff60EuX12nNKsmUdPIf4Imqn37U1rvz
+      uA359dmu7JIUTcXEXRImdwKBgHkdHpjOOIx5WDNHe0OYGmVY0sw+Am/xTRzSCS6t
+      kl8nLHRnM1W8ijvX9OQ7J44rt0uFDWCNT/mdTBz7popfMT1/SMlMlc35lKNB4gKq
+      uvD1Kz2bFw7jzM9Xa4B45RlwZLCwCz9AdDdlY0nfbRoEjvvvC2TYGGZlD+ASmZar
+      J5FbAoGBAIFS++EC90+xfHDl71F+uDNfOPYx8/+6XDSA55ePj0KjTN4EJtXJhzLS
+      Hwxfqo5r2KuMAIRK7H1pTn0rA+DIJMGP/PY2XgCUl+uXubXcsV4ACVEUGgbBpLzi
+      LrAcl2v4eIf09p/j58msUnDI8+2oE4VJy9ho47ZybMQqp/O2g/Qx
+      -----END RSA PRIVATE KEY-----
+    caCertificate: |-
+      -----BEGIN CERTIFICATE-----the certificate authority chain of trust
+      MIIFizCCA3OgAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwTjELMAkGA1UEBhMCVVMx
+      CzAJBgNVBAgMAk1JMRIwEAYDVQQKDAlJQk0gREFFTEwxHjAcBgNVBAMMFWFyY2gu
+      ZGFlbGwuaWJtLmNvbSBDQTAeFw0xOTA4MTUxNDUxMTFaFw0yOTA4MTIxNDUxMTFa
+      MFsxCzAJBgNVBAYTAlVTMQswCQYDVQQIDAJNSTESMBAGA1UECgwJSUJNIERBRUxM
+      MSswKQYDVQQDDCJhcmNoLmRhZWxsLmlibS5jb20gSW50ZXJtZWRpYXRlIENBMIIC
+      IjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA4QSukGTCCi3I88FkEWQz/Vad
+      DqjTpoHA0vTopnQV/PTqajo2l+SQ8Gx4sh4bCQdsZeg2U8JvMl6DNFeIdfdpLQNE
+      gnUjv3DuzRfQUulwzKSR+G78NtoqHWUzyUrntnxdKQ/wOG0Ld5hhLWgx9rAusFMn
+      X9UpulzwSxY9zxrUD3ZyuZjk4emfDIbB2WEe9fXr0dK05ujIVif7lRoFDQupNaHa
+      NH7/VY90oVRoYg1UuU8ZzhcAk5CxiaW1u5MbKkBU4yufI48c5E4s9khsK6j/JgJi
+      F/iS93VekvXlBl9ZI4ndQnEnbAbGsnCu5Xug47Q9c4xoknegQ575vXXvlZWAjQXM
+      rg/lMyxJM02GTQcnlFxfyn2COjNdAYvcm5YqFWsMlNj+BVhJIU5oJh7MOYJNkW//
+      6Q0fr576iQKOeI+JV/9252Z5Xz4b7n+b6koYfxDZn+0N+3cJSdRY28mMsH5G3Z7l
+      xEsDjvh3sYzXYyWYudvRNI+wEDLivBgRs+/Qnd6AOZSVzWuJ35gk+TbGoG0JJUVF
+      7HXZX0GdDRyIxQFs0nwcGMn+Jy6g8UI1wr6ZJDKnFZrAJ8gJDZK2VApYhA3zOYCv
+      s+ehqf0gZG4MJo0QagXUfDQWmWX1KSpmAdM98h4fLt/Cs8x4dSnmtMUkpVlHAZ61
+      ppQD9yzbMVxB92AdnXcCAwEAAaNmMGQwHQYDVR0OBBYEFMA29UjTciUUV3+3Ynwu
+      FqbOa6nEMB8GA1UdIwQYMBaAFOsKSI12l3NCtnKJeMN3YY/SdoxzMBIGA1UdEwEB
+      /wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMA0GCSqGSIb3DQEBCwUAA4ICAQBs
+      +/Bkv1Kyq7Akp5CN4Pc0k0aAL14SyUNBjLBPu2j/t4elPgJEqlrXFZJIV0Q5qzTu
+      ENV1hMSWmMmvceLPsjJw3wzsOCNnWLBjmzPWnTe91hWPPXL0hadhTqdYMxVEhJpb
+      scPV1atRa9T72JBv3PCUWAnNGSMz9qjbDslnIOJ7TK+gDr/FeVIA0/sMgvUxN7u0
+      geO7/rW1Xs5LJEg+MmZStcC6WXplyVI1harq2mEQwCDRXYy6Eeq+WCJ9jFFioEvH
+      QR22IUFExwfSiOtGfW0mmoPtxUZBx/qpOZ/tSwk9YnokgmIkS810vgcwSewZOIZr
+      dYtawSIxDCeZUwvHWqos+ZCwW2r8Sat0lBgbZbBb0oJQPBwsbVDuykkeOaT9oQ3g
+      QXDCrm2jj4/NoC88BFpiCSzimx55asaXnZ7Hqpkd11Bbt6FGAMdjou+O3lqjkMr8
+      weo3aSiY32n7rWIwhTuVNxngi3P0LlVTRMm1MNAKujwhCWS8Hk3SNTgHpA7RiOHZ
+      mqZPKpEXsEIGP0Jskcbr/6l3XzZJfFpRBsazP2y5KiYTHDQr8q25wsKCFzTw7B+m
+      VWMgAiXsE2+p77YGSwndCF99r9YrMxmX5OeJYGscYjgskS6QDNl+d/P32sU4XQsL
+      5Dm7fzaq65n6jyBb0I0NNVyKlFPN1cU120ex2pmDyg==
+      -----END CERTIFICATE-----
+      -----BEGIN CERTIFICATE-----
+      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
+      u+P+4FMY/mdCLrahZJucJkn9uwbYEw==
+      -----END CERTIFICATE-----
+    insecureEdgeTerminationPolicy: Redirect
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: russapp1.us-south.containers.appdomain.cloud
+      routerName: default
+      conditions:
+        - type: Admitted
+          status: 'True'
+          lastTransitionTime: '2021-01-25T14:51:39Z'
+      wildcardPolicy: None
