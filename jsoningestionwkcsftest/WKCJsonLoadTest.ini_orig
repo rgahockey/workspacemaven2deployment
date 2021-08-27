@@ -1,0 +1,29 @@
+[MetadataServer]
+ServerName = zen-cpd-zen.apps.cpdv30-prac-latest.local
+Port = 443
+UserName = russanderson
+#Password = up5XKLulmYD+mLWCbqUGxQ==
+Password  = abcefg
+PasswordEncrypted = true
+EncryptPasswordOnly = false
+
+[API]
+BaseUrl = https://zen-cpd-zen.apps.cpdv30-prac-latest.local:443/ibm/iis/igc-rest/v1
+!httpsproxyhost = 10.176.114.4
+!httpsproxyport = 3128
+!httpsproxyuser = rga
+!httpsproxypass = abc@123
+
+[Reporting]
+Verbose = true
+LineTerminator = LF
+
+[Copybook]
+SwaggerBundleID = SwaggerJSON3
+UsageType = jsonswagger
+XMLOutputDirectory = /files/
+SwaggerMandatoryList = version,Info,Paths
+
+[Actions]
+LoadAssets = true
+
