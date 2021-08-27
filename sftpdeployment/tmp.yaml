@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sftp
+    app.kubernetes.io/component: sftp
+    app.kubernetes.io/instance: sftp
+    app.kubernetes.io/name: sftp
+  name: sftp
+  namespace: jsoningestion 
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      deployment: sftp
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        openshift.io/generated-by: OpenShiftNewApp
+      creationTimestamp: null
+      labels:
+        deployment: sftp
+    spec:
+      containers:
+      - image: atmoz/sftp@sha256:019475e52168f4b6e58a84e5a563f21320a598a0df9a015c1e2dc40830ac5ca2
+        imagePullPolicy: IfNotPresent
+        name: sftp
+        ports:
+        - containerPort: 22
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/sftp
+          name: volume-vskwg
+        - mountPath: /home/sftpuser/files
+          name: v1
+        - mountPath: /home/sftpuser/archives
+          name: ja-pv-storage          
+        - mountPath: /home/sftpuser/.ssh/keys
+          name: volume-tkn2l
+        - mountPath: /etc/ssh/ssh_host_ed25519_key
+          name: host-key1
+          subPath: ssh_host_ed25519_key
+        - mountPath: /etc/ssh/ssh_host_ed25519_key.pub
+          name: host-key2
+          subPath: ssh_host_ed25519_key.pub
+        - mountPath: /etc/ssh/ssh_host_rsa_key
+          name: host-key3
+          subPath: ssh_host_rsa_key
+        - mountPath: /etc/ssh/ssh_host_rsa_key.pub
+          name: host-key4
+          subPath: ssh_host_rsa_key.pub
+        - mountPath: /etc/sftp.d/fixownership.sh
+          name: script-extension
+          subPath: fixownership.sh
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        runAsGroup: 0
+        runAsUser: 0
+      serviceAccount: sftpadmin
+      serviceAccountName: sftpadmin
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: volume-vskwg
+        secret:
+          defaultMode: 420
+          secretName: sftp-users
+      - name: v1
+        persistentVolumeClaim:
+          claimName: jsoningest-pvc
+      - name: ja-pv-storage
+        persistentVolumeClaim:
+          claimName: jsonarchive-pvc          
+      - name: volume-tkn2l
+        secret:
+          defaultMode: 420
+          secretName: sftp-ssh-key
+      - name: host-key1
+        secret:
+          defaultMode: 384
+          items:
+          - key: ssh_host_ed25519_key
+            path: ssh_host_ed25519_key
+          secretName: host-keys
+      - name: host-key2
+        secret:
+          defaultMode: 420
+          items:
+          - key: ssh_host_ed25519_key.pub
+            path: ssh_host_ed25519_key.pub
+          secretName: host-keys
+      - name: host-key3
+        secret:
+          defaultMode: 384
+          items:
+          - key: ssh_host_rsa_key
+            path: ssh_host_rsa_key
+          secretName: host-keys
+      - name: host-key4
+        secret:
+          defaultMode: 420
+          items:
+          - key: ssh_host_rsa_key.pub
+            path: ssh_host_rsa_key.pub
+          secretName: host-keys
+      - name: script-extension
+        secret:
+          defaultMode: 448
+          secretName: changeowner

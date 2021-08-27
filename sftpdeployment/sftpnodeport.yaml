@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sftp
+    app.kubernetes.io/component: sftp
+    app.kubernetes.io/instance: sftp
+    app.kubernetes.io/name: sftp
+  name: sftp-nodeport
+  namespace: jsoningestion 
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: 32222-tcp
+    nodePort: 32222
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  selector:
+    deployment: sftp
+  sessionAffinity: None
+  type: NodePort
