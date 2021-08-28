@@ -19,16 +19,16 @@ default: help
 # Docker-based builds
 # -----------------------------------------------------------------------------
 
-.PHONY: podman-build
-podman-build: podman-rmi-for-build
-	podman build \
+.PHONY: docker-build
+docker-build: docker-rmi-for-build
+	docker build \
 	    --tag $(DOCKER_IMAGE_NAME) \
 		--tag $(DOCKER_IMAGE_NAME):$(GIT_VERSION) \
 		.
 
-.PHONY: podman-build-base
-podman-build-base: podman-rmi-for-build-base
-	podman build \
+.PHONY: docker-build-base
+docker-build-base: docker-rmi-for-build-base
+	docker build \
 		--tag $(DOCKER_IMAGE_TAG) \
 		.
 
@@ -36,18 +36,18 @@ podman-build-base: podman-rmi-for-build-base
 # Clean up targets
 # -----------------------------------------------------------------------------
 
-.PHONY: podman-rmi-for-build
-podman-rmi-for-build:
-	-podman rmi --force \
+.PHONY: docker-rmi-for-build
+docker-rmi-for-build:
+	-docker rmi --force \
 		$(DOCKER_IMAGE_NAME):$(GIT_VERSION) \
 		$(DOCKER_IMAGE_NAME)
 
-.PHONY: podman-rmi-for-build-base
-podman-rmi-for-build-base:
-	-podman rmi --force $(DOCKER_IMAGE_TAG)
+.PHONY: docker-rmi-for-build-base
+docker-rmi-for-build-base:
+	-docker rmi --force $(DOCKER_IMAGE_TAG)
 
 .PHONY: clean
-clean: podman-rmi-for-build podman-rmi-for-build-base
+clean: docker-rmi-for-build docker-rmi-for-build-base
 
 # -----------------------------------------------------------------------------
 # Help

@@ -19,7 +19,8 @@ COPY ./launchspring.sh /app
 COPY ./spring-boot-0.0.1-SNAPSHOT.jar /app
 COPY ./WKCJsonLoadTest.ini /app
 COPY ./WKCJsonLoadTest.sh /app
-COPY ./WKCJsonLoad.jar /app
+COPY ./ICGRestAPICopyBook-0.0.1-SNAPSHOT.jar /app
+COPY ./IGCRestApiHelperCopyBook-0.0.1-SNAPSHOT.jar /app
 COPY ./extrajars.tar /app
 COPY ./jdk1502.tar /app
 RUN mkdir /app/extrajars
